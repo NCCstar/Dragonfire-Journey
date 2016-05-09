@@ -6,7 +6,7 @@ public class QuestDriver
    {
       board = new QuestBoard();
       JFrame frame = new JFrame("Dragonfire Journey");
-      frame.setSize(1200, 900);
+      frame.setSize(1100, 1100);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.setContentPane(board);
       frame.setVisible(true);
