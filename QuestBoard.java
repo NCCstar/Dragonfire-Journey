@@ -5,7 +5,8 @@ public class QuestBoard extends JPanel
 {
    private static SparseMatrix<Tile> grid;
    private static final int DIM=75;
-   public QuestBoard()
+   private Hero[] players;
+   public QuestBoard(int pNum)
    {
       grid=new SparseMatrix(10,13);
       grid.add(4,6,new Tile(true,new boolean[]{true,true,true,true}));
@@ -14,10 +15,18 @@ public class QuestBoard extends JPanel
       grid.add(0,12,new Tile(true,new boolean[]{false,false,true,true}));
       grid.add(9,0,new Tile(true,new boolean[]{true,true,false,false}));
       grid.add(9,12,new Tile(true,new boolean[]{true,false,false,true}));
+      players=new Hero[pNum];
+      for(int i=0;i<players.length;i++)
+      {
+         players[i]=new SteveBob(0,0,i);
+      }
    }
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
+      
+      
+      
       for(int r=0;r<grid.numRow();r++)
       {
          for(int c=0;c<grid.numCol();c++)
@@ -29,12 +38,14 @@ public class QuestBoard extends JPanel
    private void drawTile(Graphics g,Tile t,int y,int x)
    {
       if(y==1&&x==1)
-      Math.random();
+         Math.random();
       g.setColor(Color.black);
       g.fillRect(x*DIM,y*DIM,DIM,DIM);//Rect(l,t,wid,hei)
       g.setColor(Color.white);
       if((y==4||y==5)&&(x==6))
          g.setColor(Color.yellow);
+      if((x==0&&y==0)||(x==0&&y==9)||(x==12&&y==9)||(x==12&&y==0))
+         g.setColor(Color.yellow.darker());
       if(t!=null)
       {
          if(t.isRoom())

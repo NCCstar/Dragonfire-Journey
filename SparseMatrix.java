@@ -18,7 +18,7 @@ public class SparseMatrix<anyType>
       {
          i++;
       }
-      if(i<list.size()&&getKey(list.get(i).row,list.get(i).col)==getKey(r,c))
+      if(i<list.size()&&list.get(i).row==r&&list.get(i).col==c)
          return list.get(i).value;
       return null;
    }			
