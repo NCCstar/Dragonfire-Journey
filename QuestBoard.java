@@ -9,6 +9,15 @@ public class QuestBoard extends JPanel
    public QuestBoard(int pNum)
    {
       grid=new SparseMatrix(10,13);
+      //Temp-Debug
+      for(int r=0;r<grid.numRow();r++)
+      {
+         for(int c=0;c<grid.numCol();c++)
+         {
+            grid.add(r,c,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+         }
+      }
+      
       grid.add(4,6,new Tile(true,new boolean[]{true,true,true,true}));
       grid.add(5,6,new Tile(true,new boolean[]{true,true,true,true}));
       grid.add(0,0,new Tile(true,new boolean[]{false,true,true,false}));
@@ -21,6 +30,7 @@ public class QuestBoard extends JPanel
          players[i]=new SteveBob(0,0,i);
       }
    }
+   
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
@@ -37,7 +47,7 @@ public class QuestBoard extends JPanel
    }
    private void drawTile(Graphics g,Tile t,int y,int x)
    {
-      if(y==1&&x==1)
+      if(y==10&&x==0)
          Math.random();
       g.setColor(Color.black);
       g.fillRect(x*DIM,y*DIM,DIM,DIM);//Rect(l,t,wid,hei)
