@@ -18,7 +18,7 @@ public class SparseMatrix<anyType>
       {
          i++;
       }
-      if(i<list.size()&&list.get(i).row==r&&list.get(i).col==c)
+      if(i<list.size()&&getKey(list.get(i).row,list.get(i).col)==getKey(r,c))
          return list.get(i).value;
       return null;
    }			
@@ -47,7 +47,7 @@ public class SparseMatrix<anyType>
    }	
    private int getKey(int r,int c)
    {
-      return r*rows+c;
+      return r*cols+c;
    }   
    public anyType remove(int r, int c)//prob
    {
@@ -105,6 +105,6 @@ class Cell<anyType>
    }
    public String toString()
    {
-      return (String)value;
+      return row+":"+col;//(String)value;
    }
 }

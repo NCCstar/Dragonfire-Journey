@@ -11,4 +11,12 @@ public abstract class Hero
       this.y=y;
       pNum=p;
    }
+   public int getHP()
+   {
+      return HP;
+   }
+   public void changeHP(int dif)
+   {
+      HP+=dif;
+   }
 }

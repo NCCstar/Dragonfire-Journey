@@ -1,22 +1,19 @@
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
-public class QuestBoard extends JPanel
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+public class QuestBoard extends JPanel implements MouseListener
 {
    private static SparseMatrix<Tile> grid;
    private static final int DIM=75;
    private Hero[] players;
+   private int p=0;
    public QuestBoard(int pNum)
    {
+      addMouseListener(this);
+   
       grid=new SparseMatrix(10,13);
-      //Temp-Debug
-      for(int r=0;r<grid.numRow();r++)
-      {
-         for(int c=0;c<grid.numCol();c++)
-         {
-            grid.add(r,c,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-         }
-      }
       
       grid.add(4,6,new Tile(true,new boolean[]{true,true,true,true}));
       grid.add(5,6,new Tile(true,new boolean[]{true,true,true,true}));
@@ -27,9 +24,19 @@ public class QuestBoard extends JPanel
       players=new Hero[pNum];
       for(int i=0;i<players.length;i++)
       {
+         //choose players - switch
          players[i]=new SteveBob(0,0,i);
       }
    }
+   
+   public void mouseClicked(MouseEvent e)
+   {
+      int x=e.getX()/DIM;
+      int y=e.getY()/DIM;
+      grid.add(y,x,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+      repaint();
+   }
+   //grid.add(r,c,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
    
    public void paintComponent(Graphics g)
    {
@@ -80,4 +87,10 @@ public class QuestBoard extends JPanel
          }
       }
    }
+   public void mouseDragged( MouseEvent e){}
+   public void mouseExited( MouseEvent e ){}
+   public void mousePressed( MouseEvent e ){}
+   public void mouseReleased( MouseEvent e ){}
+   public void mouseEntered( MouseEvent e ){}
+   public void mouseMoved( MouseEvent e){}
 }
