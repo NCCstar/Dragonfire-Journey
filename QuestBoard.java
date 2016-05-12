@@ -21,11 +21,20 @@ public class QuestBoard extends JPanel implements MouseListener
       grid.add(0,12,new Tile(true,new boolean[]{false,false,true,true}));
       grid.add(9,0,new Tile(true,new boolean[]{true,true,false,false}));
       grid.add(9,12,new Tile(true,new boolean[]{true,false,false,true}));
+      
       players=new Hero[pNum];
       for(int i=0;i<players.length;i++)
       {
          //choose players - switch
-         players[i]=new SteveBob(0,0,i);
+         switch(i)
+         {
+            case 1:
+               players[i]=new SteveBob(0,13,i);
+               break;
+            default:
+               players[i]=new SteveBob(0,0,i);
+               break;
+         }
       }
    }
    
@@ -33,31 +42,83 @@ public class QuestBoard extends JPanel implements MouseListener
    {
       int x=e.getX()/DIM;
       int y=e.getY()/DIM;
-      if(e.getButton()==MouseEvent.BUTTON1)
+      if(x<13&&y<10)
+         if(e.getButton()==MouseEvent.BUTTON1)
+         {
+            grid.add(y,x,new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+         }
+         else
+         {
+            grid.get(y,x).rotate();
+         }
+      if(x==0&&y==11)//left
       {
-      grid.add(y,x,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+         if(grid.get(players[p].getY(),players[p].getX()).getExits()[3])
+         {
+            players[p].moveX(false);
+            if(grid.get(players[p].getY(),players[p].getX())==null)
+               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+            p++;p%=players.length;
+         }
       }
-      else
+      if(x==1&&y==10)//up
       {
-         grid.get(y,x).rotate();
+         if(grid.get(players[p].getY(),players[p].getX()).getExits()[0])
+         {
+            players[p].moveY(false);
+            if(grid.get(players[p].getY(),players[p].getX())==null)
+               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+            p++;p%=players.length;
+         }
+      }
+      if(x==2&&y==11)//right
+      {
+         if(grid.get(players[p].getY(),players[p].getX()).getExits()[1])
+         {
+            players[p].moveX(true);
+            if(grid.get(players[p].getY(),players[p].getX())==null)
+               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+            p++;p%=players.length;
+         }
+      }
+      if(x==1&&y==12)//down
+      {
+         if(grid.get(players[p].getY(),players[p].getX()).getExits()[2])
+         {
+            players[p].moveY(true);
+            if(grid.get(players[p].getY(),players[p].getX())==null)
+               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+            p++;p%=players.length;
+         }
       }
       repaint();
    }
-   //grid.add(r,c,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
    
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
-      
-      
       
       for(int r=0;r<grid.numRow();r++)
       {
          for(int c=0;c<grid.numCol();c++)
          {
             drawTile(g,grid.get(r,c),r,c);
+            for(int i=0;i<players.length;i++)
+            {
+               if(players[i].getX()==c && players[i].getY()==r)
+               {
+                  g.setColor(Color.red);
+                  g.fillRect(c*DIM+DIM/4,r*DIM+DIM/4,DIM-DIM/2,DIM-DIM/2);
+               }
+            }
          }
       }
+      
+      g.setColor(Color.blue);
+      g.fillRect(0,DIM*11,DIM,DIM);
+      g.fillRect(DIM,DIM*10,DIM,DIM);
+      g.fillRect(DIM*2,DIM*11,DIM,DIM);
+      g.fillRect(DIM,DIM*12,DIM,DIM);
    }
    private void drawTile(Graphics g,Tile t,int y,int x)
    {

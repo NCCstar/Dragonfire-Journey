@@ -11,6 +11,28 @@ public abstract class Hero
       this.y=y;
       pNum=p;
    }
+   public int getX()
+   {
+      return x;
+   }
+   public int getY()
+   {
+      return y;
+   }
+   public void moveX(boolean right)
+   {
+      if(right)
+      x++;
+      else
+      x--;
+   }
+   public void moveY(boolean down)
+   {
+      if(down)
+      y++;
+      else
+      y--;
+   }
    public int getHP()
    {
       return HP;
