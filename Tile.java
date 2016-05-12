@@ -16,12 +16,16 @@ public class Tile
       return exits;
    }
    //param: n: number of times to be rotated
-   public static void rotate(Tile t,int n)
+   public void rotate()
    {
-      boolean[] bool=t.getExits();//parady
-      for(int i=0;i<n;i++)
+      boolean[] temp=new boolean[4];
+      for(int i=0;i<temp.length;i++)
       {
-         //FINISH
+         temp[i]=exits[i];
       }
+      exits[0]=temp[3];
+      exits[3]=temp[2];
+      exits[2]=temp[1];
+      exits[1]=temp[0];
    }
 }

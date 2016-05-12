@@ -32,7 +32,7 @@ public class SparseMatrix<anyType>
       }
       if(i<list.size())
          return (anyType)list.set(i,cell).value;
-      list.add(cell);
+      //list.add(cell);
       return null;
    }	
    public void add(int r, int c, Object x)

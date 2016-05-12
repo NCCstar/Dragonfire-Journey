@@ -33,7 +33,14 @@ public class QuestBoard extends JPanel implements MouseListener
    {
       int x=e.getX()/DIM;
       int y=e.getY()/DIM;
+      if(e.getButton()==MouseEvent.BUTTON1)
+      {
       grid.add(y,x,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+      }
+      else
+      {
+         grid.get(y,x).rotate();
+      }
       repaint();
    }
    //grid.add(r,c,new Tile(u.ranB(.75),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
