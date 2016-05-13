@@ -108,7 +108,7 @@ public class QuestBoard extends JPanel implements MouseListener
                if(players[i].getX()==c && players[i].getY()==r)
                {
                   g.setColor(Color.red);
-                  g.fillRect(c*DIM+DIM/4,r*DIM+DIM/4,DIM-DIM/2,DIM-DIM/2);
+                  g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
                }
             }
          }
@@ -122,6 +122,7 @@ public class QuestBoard extends JPanel implements MouseListener
    }
    private void drawTile(Graphics g,Tile t,int y,int x)
    {
+      
       if(y==10&&x==0)
          Math.random();
       g.setColor(Color.black);
@@ -133,9 +134,45 @@ public class QuestBoard extends JPanel implements MouseListener
          g.setColor(Color.yellow.darker());
       if(t!=null)
       {
+         //draw center
+         g.fillRect(x*DIM+DIM/3,y*DIM+DIM/3,DIM/3,DIM/3);
          if(t.isRoom())
          {
-            g.fillRect(x*DIM+DIM/5,y*DIM+DIM/5,DIM*3/5,DIM*3/5);
+            //draw 4 corners
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
+            
+            if(t.getExits()[0])
+            {
+               g.fillRect(x*DIM+DIM/3,y*DIM,DIM/3,DIM/3);
+            }
+            else
+            {
+               g.fillRect(x*DIM+DIM/3,(int)(y*DIM+DIM/1.5),DIM/3,DIM/6);
+            }
+            if(t.getExits()[1])
+            {
+               g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM/3,DIM/3,DIM/3);
+            }
+            else
+            {
+               g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM/3,DIM/6,DIM/3);
+            }
+            if(t.getExits()[2])
+            {
+               g.fillRect(x*DIM+DIM/3,y*DIM+DIM*2/3,DIM/3,DIM/3);
+            }
+            else
+            {
+               g.fillRect(x*DIM+DIM/3,y*DIM+DIM*2/3,DIM/3,DIM/6);
+            }
+            if(t.getExits()[3])
+            {
+               g.fillRect(x*DIM,y*DIM+DIM*2/5,DIM/2,DIM/5);
+            }
+            //g.fillRect(x*DIM+DIM/5,y*DIM+DIM/5,DIM*3/5,DIM*3/5);
          }
          if(t.getExits()[0])
          {
