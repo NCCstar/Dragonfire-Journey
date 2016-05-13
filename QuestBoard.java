@@ -29,10 +29,16 @@ public class QuestBoard extends JPanel implements MouseListener
          switch(i)
          {
             case 1:
-               players[i]=new SteveBob(0,13,i);
+               players[i]=new SteveBob(12,0);
+               break;
+            case 2:
+               players[i]=new SteveBob(12,9);
+               break;
+            case 3:
+               players[i]=new SteveBob(0,9);
                break;
             default:
-               players[i]=new SteveBob(0,0,i);
+               players[i]=new SteveBob(0,0);
                break;
          }
       }
@@ -45,19 +51,26 @@ public class QuestBoard extends JPanel implements MouseListener
       if(x<13&&y<10)
          if(e.getButton()==MouseEvent.BUTTON1)
          {
-            grid.add(y,x,new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+            grid.add(y,x,new Tile(false,new boolean[]{u.ranB(.6),u.ranB(.6),u.ranB(.6),u.ranB(.6)}));
          }
          else
          {
             grid.get(y,x).rotate();
          }
+         
       if(x==0&&y==11)//left
       {
          if(grid.get(players[p].getY(),players[p].getX()).getExits()[3])
          {
             players[p].moveX(false);
             if(grid.get(players[p].getY(),players[p].getX())==null)
+            {
                grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[1])
+               {
+                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               }
+            }
             p++;p%=players.length;
          }
       }
@@ -67,7 +80,13 @@ public class QuestBoard extends JPanel implements MouseListener
          {
             players[p].moveY(false);
             if(grid.get(players[p].getY(),players[p].getX())==null)
+            {
                grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[2])
+               {
+                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               }
+            }
             p++;p%=players.length;
          }
       }
@@ -77,7 +96,13 @@ public class QuestBoard extends JPanel implements MouseListener
          {
             players[p].moveX(true);
             if(grid.get(players[p].getY(),players[p].getX())==null)
+            {
                grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[3])
+               {
+                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               }
+            }
             p++;p%=players.length;
          }
       }
@@ -87,7 +112,13 @@ public class QuestBoard extends JPanel implements MouseListener
          {
             players[p].moveY(true);
             if(grid.get(players[p].getY(),players[p].getX())==null)
+            {
                grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[0])
+               {
+                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+               }
+            }
             p++;p%=players.length;
          }
       }
@@ -119,6 +150,8 @@ public class QuestBoard extends JPanel implements MouseListener
       g.fillRect(DIM,DIM*10,DIM,DIM);
       g.fillRect(DIM*2,DIM*11,DIM,DIM);
       g.fillRect(DIM,DIM*12,DIM,DIM);
+      
+      g.drawString(p+1+"",0,DIM*10+DIM/2);
    }
    private void drawTile(Graphics g,Tile t,int y,int x)
    {
@@ -139,10 +172,10 @@ public class QuestBoard extends JPanel implements MouseListener
          if(t.isRoom())
          {
             //draw 4 corners
-            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
-            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
-            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
-            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6,DIM/6);
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM/6,DIM/6+1,DIM/6+1);
+            g.fillRect(x*DIM+DIM/6,y*DIM+DIM*2/3,DIM/6+1,DIM/6);
+            g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM/6,DIM/6,DIM/6+1);
+            g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM*2/3,DIM/6,DIM/6);
             
             if(t.getExits()[0])
             {
@@ -150,7 +183,7 @@ public class QuestBoard extends JPanel implements MouseListener
             }
             else
             {
-               g.fillRect(x*DIM+DIM/3,(int)(y*DIM+DIM/1.5),DIM/3,DIM/6);
+               g.fillRect(x*DIM+DIM/3,y*DIM+DIM/6,DIM/3,DIM/6+1);
             }
             if(t.getExits()[1])
             {
@@ -170,25 +203,44 @@ public class QuestBoard extends JPanel implements MouseListener
             }
             if(t.getExits()[3])
             {
-               g.fillRect(x*DIM,y*DIM+DIM*2/5,DIM/2,DIM/5);
+               g.fillRect(x*DIM,y*DIM+DIM/3,DIM/3,DIM/3);
             }
-            //g.fillRect(x*DIM+DIM/5,y*DIM+DIM/5,DIM*3/5,DIM*3/5);
+            else
+            {
+               g.fillRect(x*DIM+DIM/6,y*DIM+DIM/3,DIM/6+1,DIM/3);
+            }
          }
          if(t.getExits()[0])
          {
-            g.fillRect(x*DIM+DIM*2/5,y*DIM,DIM/5,DIM/2);
+            g.fillRect(x*DIM+DIM/3,y*DIM,DIM/3,DIM/3);
+         }
+         else
+         {
+            //g.fillRect(x*DIM+DIM/3,y*DIM+DIM/6,DIM/3,DIM/6+1);
          }
          if(t.getExits()[1])
          {
-            g.fillRect(x*DIM+DIM/2,y*DIM+DIM*2/5,DIM/2,DIM/5);
+            g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM/3,DIM/3,DIM/3);
+         }
+         else
+         {
+            //g.fillRect(x*DIM+DIM*2/3,y*DIM+DIM/3,DIM/6,DIM/3);
          }
          if(t.getExits()[2])
          {
-            g.fillRect(x*DIM+DIM*2/5,y*DIM+DIM/2,DIM/5,DIM/2);
+            g.fillRect(x*DIM+DIM/3,y*DIM+DIM*2/3,DIM/3,DIM/3);
+         }
+         else
+         {
+            //g.fillRect(x*DIM+DIM/3,y*DIM+DIM*2/3,DIM/3,DIM/6);
          }
          if(t.getExits()[3])
          {
-            g.fillRect(x*DIM,y*DIM+DIM*2/5,DIM/2,DIM/5);
+            g.fillRect(x*DIM,y*DIM+DIM/3,DIM/3,DIM/3);
+         }
+         else
+         {
+            //g.fillRect(x*DIM+DIM/6,y*DIM+DIM/3,DIM/6+1,DIM/3);
          }
       }
    }
