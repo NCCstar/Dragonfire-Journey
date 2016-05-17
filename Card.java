@@ -8,4 +8,8 @@ public class Card
    {
       return null;
    }
+   public static Card ranRoom()
+   {
+      return new Card("nothing");
+   }
 }

@@ -4,6 +4,7 @@ todo long: room rand
 todo maybe: music/sounds
 */
 import java.util.*;
+import java.io.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseListener;
@@ -77,6 +78,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
+            drawRoomCard(); 
             p++;p%=players.length;
          }
       }
@@ -93,6 +95,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
+            drawRoomCard(); 
             p++;p%=players.length;
          }
       }
@@ -109,6 +112,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
+            drawRoomCard(); 
             p++;p%=players.length;
          }
       }
@@ -125,12 +129,16 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
+            drawRoomCard();   
             p++;p%=players.length;
          }
       }
       repaint();
    }
-   
+   private void drawRoomCard()
+   {
+      Card drawn = Card.ranRoom();
+   }
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
