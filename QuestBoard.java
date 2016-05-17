@@ -1,3 +1,8 @@
+/*
+todo short: cards: room-, combat
+todo long: room rand
+todo maybe: music/sounds
+*/
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
@@ -6,9 +11,10 @@ import java.awt.event.MouseEvent;
 public class QuestBoard extends JPanel implements MouseListener
 {
    private static SparseMatrix<Tile> grid;
-   private static final int DIM=75;
+   private static final int DIM=50;
    private Hero[] players;
    private int p=0;
+   private int mode=0;//0=board-movement, 1=cards, 2=battle
    public QuestBoard(int pNum)
    {
       addMouseListener(this);
