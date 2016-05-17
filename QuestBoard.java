@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 public class QuestBoard extends JPanel implements MouseListener
 {
    private static SparseMatrix<Tile> grid;
-   private static final int DIM=50;
+   private static final int DIM=60;
    private Hero[] players;
    private int p=0;
    private int mode=0;//0=board-movement, 1=cards, 2=battle
@@ -78,7 +78,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
-            drawRoomCard(); 
+            exeCard(drawRoomCard());
             p++;p%=players.length;
          }
       }
@@ -95,7 +95,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
-            drawRoomCard(); 
+            exeCard(drawRoomCard()); 
             p++;p%=players.length;
          }
       }
@@ -112,7 +112,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
-            drawRoomCard(); 
+            exeCard(drawRoomCard()); 
             p++;p%=players.length;
          }
       }
@@ -129,15 +129,35 @@ public class QuestBoard extends JPanel implements MouseListener
                   grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
                }
             }
-            drawRoomCard();   
+            exeCard(drawRoomCard());
+               
             p++;p%=players.length;
          }
       }
       repaint();
    }
-   private void drawRoomCard()
+   private void exeCard(String card)
    {
-      Card drawn = Card.ranRoom();
+      u.SOP(card);
+      switch(card)
+      {
+         case "goblin":
+         
+            break;
+      }
+   }
+   private String drawRoomCard()
+   {
+      int ran=u.ranI(0,50);
+      if(ran<34)
+      {
+         return "nothing";
+      }
+      if(ran<44)
+      {
+         return "goblin";
+      }
+      return "orc";
    }
    public void paintComponent(Graphics g)
    {

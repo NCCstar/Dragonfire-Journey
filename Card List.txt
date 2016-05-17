@@ -1,0 +1,185 @@
+ROOM CARDS:
+
+1 - shuffle the deck
+1 - cave in
+1 - curse of the wizard
+1 - crossfire trap
+1 - potion
+1 - bracelet 40GP
+1 - jewellery 30GP
+1 - trapdoor
+1 - sneak attack (Mountain Troll)
+2 - sneak attack (Death Warrior)
+2 - sneak attack (Orc)
+2 - Champion of Chaos
+3 - Death Warrior
+3 - Mountain Troll
+4 - Orc
+5 - Goblin
+3 - giant spider
+3 - torch goes out
+3 - vampire bats
+5 - dead adventurer
+6 - crypt
+34 - empty
+
+TOTAL=84
+
+---------------
+
+DOOR CARDS:
+
+1 - shuffle the deck
+1 - trap damage D12-luck
+1 - trap damage D6
+1 - trap damage D6luck
+5 - door opens
+6 - door jammed shut
+
+TOTAL=15
+
+---------------
+
+TRAP CARDS:
+
+1 - shuffle the deck
+2 - explosion
+2 - crossfire trap
+2 - cave in
+2 - poisonous gas
+2 - poisonous snakes
+4 - trapdoor
+
+TOTAL=15
+
+---------------
+
+CORPSE CARDS:
+
+1 - shuffle the deck
+1 - necklace 150GP
+1 - golden guineas 20GP
+1 - golden guineas 60GP
+1 - potion
+1 - scorpion damage D6-2
+1 - scorpion damage D6
+3 - rope
+5 - nothing
+
+TOTAL=15
+
+---------------
+
+CRYPT CARDS:
+
+1 - shuffle the deck
+1 - trap damage D6-3
+1 - trap damage D12-3 luck
+1 - bracelet 120GP
+1 - jewelled dagger 250GP
+1 - brooch 100GP
+1 - golden guineas 50GP
+1 - skeleton
+3 - potion
+4 - empty
+
+TOTAL=15
+
+---------------
+
+SEARCH CARDS:
+
+1 - shuffle the deck
+1 - trap
+1 - potion
+1 - golden guineas 10GP
+1 - giant centipede
+1 - ring 90GP
+1 - jewellery 200GP
+3 - empty
+5 - secret door
+
+TOTAL=15
+
+---------------
+
+MONSTER CARDS:
+
+15 - monster
+
+TOTAL=15
+
+---------------
+
+TOTAL NUMBER OF CARDS=174
+
+---------------
+
+DRAGON COUNTERS:
+
+7 - dragon asleep
+1 - dragon awake
+
+TOTAL=8
+
+----------------
+
+RING COUNTERS:
+
+Opening, warning, Healing, Blinding
+
+TOTAL=4
+
+----------------
+
+COMBAT COUNTERS - (slash, mighty blow, leap aside):
+
+3 - Ulv Grimhand
+3 - Sir Rohan
+3 - Volrik The Brave
+3 - El-adoran Sureshot
+3 - death warrior
+3 - mountain troll
+3 - orc
+3 - champon of chaos
+3 - goblin
+
+TOTAL=27
+
+----------------
+
+TREASURE TOKENS:
+
+1 - 100GP
+1 - 110GP
+1 - 120GP
+1 - 130GP
+1 - 140GP
+1 - 150GP
+1 - 160GP
+1 - 170GP
+1 - 180GP
+1 - 190GP
+2 - 200GP
+1 - 220GP
+1 - 230GP
+1 - 240GP
+1 - 250GP
+1 - 260GP
+1 - 270GP
+1 - 280GP
+1 - 300GP
+1 - 500GP
+1 - 700GP
+1 - 800GP
+1 - 1100GP
+1 - 1500GP
+1 - 1800GP
+1 - 2000GP
+1 - 2200GP
+1 - 3200GP
+1 - 3800GP
+1 - 4000GP
+1 - 4500GP
+
+TOTAL=32
