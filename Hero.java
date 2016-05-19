@@ -20,16 +20,16 @@ public abstract class Hero
    public void moveX(boolean right)
    {
       if(right)
-      x++;
+         x++;
       else
-      x--;
+         x--;
    }
    public void moveY(boolean down)
    {
       if(down)
-      y++;
+         y++;
       else
-      y--;
+         y--;
    }
    public int getHP()
    {

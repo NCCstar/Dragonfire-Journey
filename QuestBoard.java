@@ -16,6 +16,8 @@ public class QuestBoard extends JPanel implements MouseListener
    private Hero[] players;
    private int p=0;
    private int mode=0;//0=board-movement, 1=cards, 2=battle
+   private int enemy=0;
+   private String enemyName=null;
    public QuestBoard(int pNum)
    {
       addMouseListener(this);
@@ -53,86 +55,105 @@ public class QuestBoard extends JPanel implements MouseListener
    
    public void mouseClicked(MouseEvent e)
    {
-      int x=e.getX()/DIM;
-      int y=e.getY()/DIM;
-      if(x<13&&y<10)
-         if(e.getButton()==MouseEvent.BUTTON1)
-         {
-            grid.add(y,x,new Tile(false,new boolean[]{u.ranB(.6),u.ranB(.6),u.ranB(.6),u.ranB(.6)}));
-         }
-         else
-         {
-            grid.get(y,x).rotate();
-         }
+      if(mode==0)
+      {
+         int x=e.getX()/DIM;
+         int y=e.getY()/DIM;
+         if(false)
+            if(e.getButton()==MouseEvent.BUTTON1)
+            {
+               grid.add(y,x,new Tile(false,new boolean[]{u.ranB(.6),u.ranB(.6),u.ranB(.6),u.ranB(.6)}));
+            }
+            else
+            {
+               grid.get(y,x).rotate();
+            }
          
-      if(x==0&&y==11)//left
-      {
-         if(grid.get(players[p].getY(),players[p].getX()).getExits()[3])
+         if(x==players[p].getX()-1&&y==players[p].getY())//left
          {
-            players[p].moveX(false);
-            if(grid.get(players[p].getY(),players[p].getX())==null)
+            if(grid.get(players[p].getY(),players[p].getX()).getExits()[3])
             {
-               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[1])
+               players[p].moveX(false);
+               if(grid.get(players[p].getY(),players[p].getX())==null)
                {
-                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  while(!grid.get(players[p].getY(),players[p].getX()).getExits()[1])
+                  {
+                     grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  }
+               }
+               if(grid.get(players[p].getY(),players[p].getX()).isRoom())
+               {
+                  exeCard(drawRoomCard());
+                  p++;p%=players.length;
                }
             }
-            exeCard(drawRoomCard());
-            p++;p%=players.length;
+         }
+         if(x==players[p].getX()&&y==players[p].getY()-1)//up
+         {
+            if(grid.get(players[p].getY(),players[p].getX()).getExits()[0])
+            {
+               players[p].moveY(false);
+               if(grid.get(players[p].getY(),players[p].getX())==null)
+               {
+                  grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  while(!grid.get(players[p].getY(),players[p].getX()).getExits()[2])
+                  {
+                     grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  }
+               }
+               if(grid.get(players[p].getY(),players[p].getX()).isRoom())
+               {
+                  exeCard(drawRoomCard());
+                  p++;p%=players.length;
+               }
+            }
+         }
+         if(x==players[p].getX()+1&&y==players[p].getY())//right
+         {
+            if(grid.get(players[p].getY(),players[p].getX()).getExits()[1])
+            {
+               players[p].moveX(true);
+               if(grid.get(players[p].getY(),players[p].getX())==null)
+               {
+                  grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  while(!grid.get(players[p].getY(),players[p].getX()).getExits()[3])
+                  {
+                     grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  }
+               }
+               if(grid.get(players[p].getY(),players[p].getX()).isRoom())
+               {
+                  exeCard(drawRoomCard());
+                  p++;p%=players.length;
+               }
+            }
+         }
+         if(x==players[p].getX()&&y==players[p].getY()+1)//down
+         {
+            if(grid.get(players[p].getY(),players[p].getX()).getExits()[2])
+            {
+               players[p].moveY(true);
+               if(grid.get(players[p].getY(),players[p].getX())==null)
+               {
+                  grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  while(!grid.get(players[p].getY(),players[p].getX()).getExits()[0])
+                  {
+                     grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
+                  }
+               }
+               if(grid.get(players[p].getY(),players[p].getX()).isRoom())
+               {
+                  exeCard(drawRoomCard());
+                  p++;p%=players.length;
+               }
+            }
          }
       }
-      if(x==1&&y==10)//up
+      else
+      if(mode==2)
       {
-         if(grid.get(players[p].getY(),players[p].getX()).getExits()[0])
-         {
-            players[p].moveY(false);
-            if(grid.get(players[p].getY(),players[p].getX())==null)
-            {
-               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[2])
-               {
-                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               }
-            }
-            exeCard(drawRoomCard()); 
-            p++;p%=players.length;
-         }
-      }
-      if(x==2&&y==11)//right
-      {
-         if(grid.get(players[p].getY(),players[p].getX()).getExits()[1])
-         {
-            players[p].moveX(true);
-            if(grid.get(players[p].getY(),players[p].getX())==null)
-            {
-               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[3])
-               {
-                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               }
-            }
-            exeCard(drawRoomCard()); 
-            p++;p%=players.length;
-         }
-      }
-      if(x==1&&y==12)//down
-      {
-         if(grid.get(players[p].getY(),players[p].getX()).getExits()[2])
-         {
-            players[p].moveY(true);
-            if(grid.get(players[p].getY(),players[p].getX())==null)
-            {
-               grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               while(!grid.get(players[p].getY(),players[p].getX()).getExits()[0])
-               {
-                  grid.set(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()}));
-               }
-            }
-            exeCard(drawRoomCard());
-               
-            p++;p%=players.length;
-         }
+         
       }
       repaint();
    }
@@ -142,18 +163,26 @@ public class QuestBoard extends JPanel implements MouseListener
       switch(card)
       {
          case "goblin":
-         
+            mode=2;
+            enemyName="Goblin";
+            enemy = u.ranI(2,4);
+            break;
+         case "orc":
+            mode=2;
+            enemyName="Orc";
+            enemy = u.ranI(3,5);
             break;
       }
    }
+   
    private String drawRoomCard()
    {
       int ran=u.ranI(0,50);
-      if(ran<34)
+      if(ran<30)
       {
          return "nothing";
       }
-      if(ran<44)
+      if(ran<40)
       {
          return "goblin";
       }
@@ -162,28 +191,48 @@ public class QuestBoard extends JPanel implements MouseListener
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
-      
-      for(int r=0;r<grid.numRow();r++)
+      if(mode==0)
       {
-         for(int c=0;c<grid.numCol();c++)
+         for(int r=0;r<grid.numRow();r++)
          {
-            drawTile(g,grid.get(r,c),r,c);
-            for(int i=0;i<players.length;i++)
+            for(int c=0;c<grid.numCol();c++)
             {
-               if(players[i].getX()==c && players[i].getY()==r)
+               drawTile(g,grid.get(r,c),r,c);
+               for(int i=0;i<players.length;i++)
                {
-                  g.setColor(Color.red);
-                  g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
+                  if(players[i].getX()==c && players[i].getY()==r)
+                  {
+                     if(i==p)
+                        g.setColor(Color.red);
+                     else
+                        g.setColor(Color.blue);
+                     g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
+                  }
                }
             }
          }
       }
-      
-      g.setColor(Color.blue);
-      g.fillRect(0,DIM*11,DIM,DIM);
-      g.fillRect(DIM,DIM*10,DIM,DIM);
-      g.fillRect(DIM*2,DIM*11,DIM,DIM);
-      g.fillRect(DIM,DIM*12,DIM,DIM);
+      else
+         if(mode==2)
+         {
+            g.setColor(Color.red.darker());
+            g.fillRect(DIM*3,0,DIM*3,DIM*2);
+            g.fillRect(DIM*3,DIM*7,DIM*3,DIM*2);
+            g.setColor(Color.blue.darker());
+            g.fillRect(0,DIM*3,DIM*2,DIM*3);
+            g.fillRect(DIM*7,DIM*3,DIM*2,DIM*3);
+            g.setColor(Color.red.brighter());
+            g.fillRect(DIM*3,DIM*2,DIM*3,DIM);
+            g.fillRect(DIM*3,DIM*6,DIM*3,DIM);
+            g.setColor(Color.blue.brighter());
+            g.fillRect(DIM*2,DIM*3,DIM,DIM*3);
+            g.fillRect(DIM*6,DIM*3,DIM,DIM*3);
+            
+            g.setColor(Color.black);
+            g.drawRect(DIM*3,DIM*3,DIM*3,DIM*3);
+            g.drawRect(DIM*3,DIM*2,DIM*3,DIM);
+            g.drawRect(DIM*3,DIM*6,DIM*3,DIM);
+         }
       
       g.drawString(p+1+"",0,DIM*10+DIM/2);
    }
