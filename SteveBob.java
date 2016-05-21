@@ -4,4 +4,8 @@ public class SteveBob extends Hero
    {
       super(20,x,y);
    }
+   public String getName()
+   {
+      return "SteveBob";
+   }
 }

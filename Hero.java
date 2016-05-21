@@ -39,4 +39,5 @@ public abstract class Hero
    {
       HP+=dif;
    }
+   public abstract String getName();
 }

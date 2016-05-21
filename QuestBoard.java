@@ -16,7 +16,7 @@ public class QuestBoard extends JPanel implements MouseListener
    private Hero[] players;//array of the player Heroes, .length for number of players
    private int p=0;//player number active
    private int mode=0;//0=board-movement, 1=cards, 2=battle
-   private int enemy=0;//amount of enemy hp remaining
+   private int enemyHP=0;//amount of enemy hp remaining
    private String enemyName=null;//String of the enemy's name - used to randomize enemy hp
    //pre: pNum-number of players, decided by QuestDriver
    //post: creates QuestBoard w/ appropriate values.
@@ -121,7 +121,7 @@ public class QuestBoard extends JPanel implements MouseListener
       else
          if(mode==2)//if in battle mode
          {
-         
+            
          }
       repaint();
    }
@@ -135,15 +135,101 @@ public class QuestBoard extends JPanel implements MouseListener
          case "goblin suprise":
          //attack damage
          case "goblin"://if goblin monster
-            mode=2;
             enemyName="Goblin";
-            enemy = u.ranI(2,4);
+            enemyHP = u.ranI(2,4);
+            //transition
+            repaint();
+            battle();
             break;
          case "orc":
-            mode=2;
             enemyName="Orc";
-            enemy = u.ranI(3,5);
+            enemyHP = u.ranI(3,5);
+            //transition
+            repaint();
+            battle();
             break;
+      }
+   }
+   private void battle()
+   {
+      while(players[p].getHP()>0&&enemyHP>0)
+      {
+         Object[] options = {"Leap Aside","Slash","Mighty Blow"};
+         byte exe=0;//0=leap aside, 1=slash, 2=Mighty Blow
+         switch((String)JOptionPane.showInputDialog(null,"Choose and action to take.",players[p].getName()+" Vs. "+enemyName,JOptionPane.INFORMATION_MESSAGE, null,options, options[0]))
+         {
+            case "Slash":
+               exe=1;
+               break;
+            case "Mighty Blow":
+               exe=2;
+               break;
+         }
+         byte otherExe=0;
+         float ran=(float)Math.random();
+         switch(enemyName)
+         {
+            case "Goblin":
+               if(ran<.3)
+               {
+                  otherExe=2;
+               }
+               else
+                  if(ran<.7)
+                  {
+                     otherExe=1;
+                  }
+                  else
+                  {
+                     otherExe=0;
+                  }
+               break;
+            default:
+               if(ran<(1.0/3))
+               {
+                  otherExe=2;
+               }
+               else
+                  if(ran<(2.0/3))
+                  {
+                     otherExe=1;
+                  }
+                  else
+                  {
+                     otherExe=0;
+                  }
+               break;
+         }
+         switch(otherExe)
+         {
+            case 1:
+               JOptionPane.showMessageDialog(null,"The "+enemyName+" slashes!",enemyName,JOptionPane.INFORMATION_MESSAGE);
+               break;
+            case 2:
+               JOptionPane.showMessageDialog(null,"The "+enemyName+" attempts a Mighty Blow",enemyName,JOptionPane.INFORMATION_MESSAGE);
+               break;
+            default:
+               JOptionPane.showMessageDialog(null,"The "+enemyName+" leaps aside!",enemyName,JOptionPane.INFORMATION_MESSAGE);
+               break;
+         }
+         if(exe==otherExe)
+         {
+            enemyHP--;
+            players[p].changeHP(-1);
+            JOptionPane.showMessageDialog(null,"1 damage to "+players[p].getName()+" and to the "+enemyName,"Damage!",JOptionPane.INFORMATION_MESSAGE);
+         }
+         else//0=la,1=sl,2=mb
+            if((exe+1)%3==otherExe)
+            {
+               players[p].changeHP(-1);
+               JOptionPane.showMessageDialog(null,"1 damage to "+players[p].getName(),"Damage!",JOptionPane.INFORMATION_MESSAGE);
+            }
+            else
+            {
+               enemyHP--;
+               JOptionPane.showMessageDialog(null,"1 damage to the "+enemyName,"Damage!",JOptionPane.INFORMATION_MESSAGE);
+            }
+         repaint();
       }
    }
    //post: returns random room card
@@ -179,6 +265,8 @@ public class QuestBoard extends JPanel implements MouseListener
                      else
                         g.setColor(Color.blue);
                      g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
+                     g.setColor(Color.black);
+                     g.drawString(""+players[i].getHP(),c*DIM+DIM/3+2,r*DIM+DIM/3+(int)(DIM-DIM/1.5)-2);
                   }
                }
             }
@@ -187,32 +275,6 @@ public class QuestBoard extends JPanel implements MouseListener
       else
          if(mode==2)
          {
-            g.setColor(Color.red.darker());
-            g.fillRect(DIM*3,0,DIM*3,DIM*2);
-            g.fillRect(DIM*3,DIM*7,DIM*3,DIM*2);
-            
-            g.setColor(Color.blue.darker());
-            g.fillRect(0,DIM*3,DIM*2,DIM*3);
-            g.fillRect(DIM*7,DIM*3,DIM*2,DIM*3);
-            
-            g.setColor(Color.red.brighter());
-            g.fillRect(DIM*3,DIM*2,DIM*3,DIM);
-            g.fillRect(DIM*3,DIM*6,DIM*3,DIM);
-            
-            g.setColor(Color.blue.brighter());
-            g.fillRect(DIM*2,DIM*3,DIM,DIM*3);
-            g.fillRect(DIM*6,DIM*3,DIM,DIM*3);
-            
-            g.setColor(Color.black);
-            g.drawRect(DIM*3,DIM*2,DIM*3,DIM);
-            g.drawRect(DIM*3,DIM*6,DIM*3,DIM);
-            g.drawRect(DIM*4,DIM*2,DIM,DIM);
-            g.drawRect(DIM*4,DIM*6,DIM,DIM);
-            g.drawRect(DIM*2,DIM*3,DIM,DIM*3);
-            g.drawRect(DIM*2,DIM*4,DIM,DIM);
-            g.drawRect(DIM*6,DIM*3,DIM,DIM*3);
-            g.drawRect(DIM*6,DIM*4,DIM,DIM);
-            
             
          }
       
