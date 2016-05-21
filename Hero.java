@@ -1,8 +1,10 @@
+import java.util.ArrayList;
 public abstract class Hero
 {
    private int HP;
    private int x;
    private int y;
+   private ArrayList<String> bag = new ArrayList();
    public Hero(int hp,int x,int y)
    {
       HP=hp;
@@ -16,6 +18,10 @@ public abstract class Hero
    public int getY()
    {
       return y;
+   }
+   public ArrayList<String> getBag()
+   {
+      return bag;
    }
    public void moveX(boolean right)
    {
