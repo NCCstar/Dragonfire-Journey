@@ -12,10 +12,10 @@ import java.awt.event.MouseEvent;
 public class QuestBoard extends JPanel implements MouseListener
 {
    private static SparseMatrix<Tile> grid;//game board
-   private static final int DIM=60;//unversal size of one grid tile
+   private static final byte DIM=60;//unversal size of one grid tile
    private Hero[] players;//array of the player Heroes, .length for number of players
-   private int p=0;//player number active
-
+   private byte p=0;//player number active
+   private byte dragonLeft = 8;//dragon cards left
    public int getDIM(){
       return DIM;}
    //pre: pNum-number of players, decided by QuestDriver
@@ -80,11 +80,11 @@ public class QuestBoard extends JPanel implements MouseListener
          if(grid.get(players[p].getY(),players[p].getX())==null)//if new space is empty
          {
             //add new random tile
-            boolean[] doors = new boolean[]{u.ranB(),u.ranB(),u.ranB(),u.ranB()};//random exits
-            while(!(doors[0]||doors[1]||doors[2]||doors[3]))//while not at least one exit
+            boolean[] doors;
+            do
             {
-               doors = new boolean[]{u.ranB(.65),u.ranB(.65),u.ranB(.65),u.ranB(.65)};//re-random
-            }
+               doors = new boolean[]{u.ranB(.6),u.ranB(.6),u.ranB(.6),u.ranB(.6)};//re-random
+            }while(!(doors[0]||doors[1]||doors[2]||doors[3]));//while not at least one exit
             if(oneTrue(doors))
                grid.add(players[p].getY(),players[p].getX(),new Tile(true,doors));
             else
@@ -137,7 +137,10 @@ public class QuestBoard extends JPanel implements MouseListener
          }
          if(grid.get(players[p].getY(),players[p].getX()).isRoom()&&legit)//if this is not a corridor
          {
-            exeCard(drawRoomCard());//draw and execute a room card
+            if(x==6&&(y==4||y==5))
+               exeCard("dragon");
+            else
+               exeCard(drawRoomCard());//draw and execute a room card
             p++;p%=players.length;//next player.
          }//else keep same player
       }
@@ -155,16 +158,30 @@ public class QuestBoard extends JPanel implements MouseListener
          case "goblin"://if goblin monster
             //transition
             repaint();
-            battle("Goblin",u.ranI(2,4));
+            battle("Goblin",(byte)u.ranI(2,4));
             break;
          case "orc":
             //transition
             repaint();
-            battle("Orc",u.ranI(3,5));
+            battle("Orc",(byte)u.ranI(3,5));
+            break;
+         case "dragon":
+            if(u.ranI(0,dragonLeft)==0)
+            {
+               JOptionPane.showMessageDialog(null,"The dragon awakes!","ROAAAR!!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(u.ranI(-10,-20));
+            }
+            else
+            {
+               dragonLeft--;
+               int gold = u.ranI(10,100)*100;
+               JOptionPane.showMessageDialog(null,"You snatch part of the dragon's treasure.","ZZzzzz",JOptionPane.INFORMATION_MESSAGE);
+               players[p].getBag().add(gold+"G");
+            }
             break;
       }
    }
-   private void battle(String enemyName,int enemyHP)
+   private void battle(String enemyName,byte enemyHP)
    {
       while(players[p].getHP()>0&&enemyHP>0)
       {
@@ -342,6 +359,7 @@ public class QuestBoard extends JPanel implements MouseListener
          g.fillRect(i*DIM*2,DIM*10,DIM*2,DIM*2);
          g=setTextColor(g);
          g.drawString("HP:"+players[i].getHP(),i*DIM*2+5,DIM*11);
+         g.drawString("Bag:"+players[i].getBag(),i*DIM*2+5,DIM*11+11);
       }
    }
    private Graphics setTextColor(Graphics x)
