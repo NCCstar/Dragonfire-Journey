@@ -17,6 +17,7 @@ public class QuestBoard extends JPanel implements MouseListener
    private int p=0;//player number active
    private boolean secTun=false;//if in secret tunnel mode
    private byte dragonLeft = 8;//dragon cards left
+   private byte sunLeft=27;
    public byte getDIM(){
       return DIM;}
    //pre: pNum-number of players, decided by QuestDriver
@@ -168,22 +169,28 @@ public class QuestBoard extends JPanel implements MouseListener
                }
                legit=true;//next turn
             }
-            if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
-            {
-               if(x==6&&(y==4||y==5))
-                  exeCard("dragon");//if in chamber, dragon card
-               else
-                  exeCard(drawCard((byte)0));//draw and execute a room card
-            }
-            else
-               if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
+            repaint();
+            if(x==players[p].getX()&&y==players[p].getY())
+               if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
                {
-                  legit=false;
+                  if(x==6&&(y==4||y==5))
+                     exeCard("dragon");//if in chamber, dragon card
+                  else
+                     exeCard(drawCard((byte)0));//draw and execute a room card
                }
+               else
+                  if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
+                  {
+                     legit=false;
+                  }
          }while(false);
          if(legit)
          {
             p=(p+1)%players.length;//next player.
+            if(p==0)
+            {
+               sunLeft--;
+            }
          }//else keep same player
       }
       repaint();
@@ -258,7 +265,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   break;
             }
          }
-         catch(Exception e)//if click cancel
+         catch(Exception e)//if select cancel
          {
             exe=0;//leap aside
          }
@@ -420,6 +427,7 @@ public class QuestBoard extends JPanel implements MouseListener
          }
       }
       drawPlayers(g);
+      drawSun(g);
    }
    //post: draws the player cards at bottom of screen. Shows HP and items obtained.
    private void drawPlayers(Graphics g)
@@ -459,6 +467,14 @@ public class QuestBoard extends JPanel implements MouseListener
             g.drawString(players[i].getBag().get(j),i*DIM*2,DIM*10+30*(j+2));
          }
       }
+   }
+   private void drawSun(Graphics g)
+   {
+      g.setColor(Color.yellow);
+      g.fillRect(DIM*(players.length*2),DIM*10,DIM*3,DIM*2);
+      g=setTextColor(g);
+      g.setFont(new Font(null,0,DIM));
+      g.drawString(sunLeft+"",DIM*(players.length*2+1),(int)(DIM*11.5));
    }
    //pre: x is Graphics with color to be inverted
    //post: x has a rgb-inverted color
