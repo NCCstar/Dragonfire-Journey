@@ -14,7 +14,8 @@ public class QuestBoard extends JPanel implements MouseListener
    private static SparseMatrix<Tile> grid;//game board
    private static final byte DIM=60;//unversal size of one grid tile
    private Hero[] players;//array of the player Heroes, .length for number of players
-   private byte p=0;//player number active
+   private int p=0;//player number active
+   private boolean secTun=false;
    private byte dragonLeft = 8;//dragon cards left
    public int getDIM(){
       return DIM;}
@@ -115,6 +116,17 @@ public class QuestBoard extends JPanel implements MouseListener
       if(x>=0&&x<13&&y>=0&&y<10)
       {
          boolean legit=false;//should change turn
+         if(x==players[p].getX()&&y==players[p].getY()&&grid.get(y,x).canSearch())
+         {
+            if(x==6&&(y==4||y==5))
+               exeCard("dragon");
+            else
+            {
+               exeCard(drawCard((byte)1));
+               grid.get(y,x).search();
+            }
+            p=(p+1)%players.length;
+         }
          if(x==players[p].getX()&&y==players[p].getY()-1)//if clicked above player
          {
             newTile(0);
@@ -140,8 +152,8 @@ public class QuestBoard extends JPanel implements MouseListener
             if(x==6&&(y==4||y==5))
                exeCard("dragon");
             else
-               exeCard(drawRoomCard());//draw and execute a room card
-            p++;p%=players.length;//next player.
+               exeCard(drawCard((byte)0));//draw and execute a room card
+            p=(p+1)%players.length;//next player.
          }//else keep same player
       }
       repaint();
@@ -175,9 +187,22 @@ public class QuestBoard extends JPanel implements MouseListener
             {
                dragonLeft--;
                int gold = u.ranI(10,100)*100;
-               JOptionPane.showMessageDialog(null,"You snatch part of the dragon's treasure.","ZZzzzz",JOptionPane.INFORMATION_MESSAGE);
+               JOptionPane.showMessageDialog(null,"You snatch "+gold+"G of the dragon's treasure.","ZZzzzz",JOptionPane.INFORMATION_MESSAGE);
                players[p].getBag().add(gold+"G");
             }
+            break;
+         case "gold":
+            int gold = u.ranI(1,90)*10;
+            JOptionPane.showMessageDialog(null,"You find gold.","Eureka!",JOptionPane.INFORMATION_MESSAGE);
+            players[p].getBag().add(gold+"G");
+            break;
+         case "secret tunnel":
+            JOptionPane.showMessageDialog(null,"You find a secret passage. Move to an adjecent space.","Secret Tunnel!",JOptionPane.INFORMATION_MESSAGE);
+            
+            break;
+         case "nothing":
+            JOptionPane.showMessageDialog(null,"Nothing happens.","Phew",JOptionPane.INFORMATION_MESSAGE); 
+            secTun=true;
             break;
       }
    }
@@ -277,18 +302,35 @@ public class QuestBoard extends JPanel implements MouseListener
       }
    }
    //post: returns random room card
-   private String drawRoomCard()
+   private String drawCard(byte type)//0=room,1==search
    {
-      int ran=u.ranI(0,45);
-      if(ran<35)
+      if(type==0)
       {
-         return "nothing";
+         int ran=u.ranI(0,45);
+         if(ran<35)
+         {
+            return "nothing";
+         }
+         if(ran<40)
+         {
+            return "goblin";
+         }
+         return "orc";
       }
-      if(ran<40)
+      if(type==1)
       {
-         return "goblin";
+         int ran=u.ranI(0,45);
+         if(ran<35)
+         {
+            return "nothing";
+         }
+         if(ran<40)
+         {
+            return "secret tunnel";
+         }
+         return "gold";
       }
-      return "orc";
+      return "";
    }
    public void paintComponent(Graphics g)
    {
@@ -379,7 +421,10 @@ public class QuestBoard extends JPanel implements MouseListener
          Math.random();
       g.setColor(Color.black);
       g.fillRect(x*DIM,y*DIM,DIM,DIM);//Rect(l,t,wid,hei)
-      g.setColor(Color.white);
+      if(grid.get(y,x)!=null&&grid.get(y,x).canSearch())
+         g.setColor(Color.white);
+      else
+         g.setColor(Color.white.darker());
       if((y==4||y==5)&&(x==6))
          g.setColor(Color.yellow);
       if((x==0&&y==0)||(x==0&&y==9)||(x==12&&y==9)||(x==12&&y==0))
