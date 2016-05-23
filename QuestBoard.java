@@ -112,88 +112,96 @@ public class QuestBoard extends JPanel implements MouseListener
    }
    public void mouseClicked(MouseEvent e)
    {
-      int x=e.getX()/DIM;//get translate coordinates of click
-      int y=e.getY()/DIM;
-         //curr pos = current position
-      if(x>=0&&x<13&&y>=0&&y<10)
+      if(sunLeft>0)
       {
-         boolean legit=false;//if should change turn
-         do//loop to break out of
+         int x=e.getX()/DIM;//get translate coordinates of click
+         int y=e.getY()/DIM;
+         //curr pos = current position
+         if(x>=0&&x<13&&y>=0&&y<10)
          {
-            if(x==players[p].getX()&&y==players[p].getY()&&grid.get(y,x).canSearch())//if searching
+            boolean legit=false;//if should change turn
+            do//loop to break out of
             {
-               if(x==6&&(y==4||y==5))
-                  exeCard("dragon");//if in dragon room, get dragon loot
-               else
-               {
-                  exeCard(drawCard((byte)1));//random search card
-                  grid.get(y,x).search();//increment tile's search
-               }
-               if(!secTun)
-                  legit=true;
-               break;//don't check the rest
-            }
-            if(x==players[p].getX()&&y==players[p].getY()-1)//if clicked above player
-            {
-               newTile(0);//go up
-               if(secTun)
-               {//un-secret tunnel
-                  secTun=false;
-               }
-               legit=true;//next turn
-            }
-            if(x==players[p].getX()+1&&y==players[p].getY())//if clicked right of player
-            {
-               newTile(1);//go right
-               if(secTun)
-               {//un-secret tunnel
-                  secTun=false;
-               }
-               legit=true;//next turn
-            }
-            if(x==players[p].getX()&&y==players[p].getY()+1)//if clicked below player
-            {
-               newTile(2);//go down
-               if(secTun)
-               {//un-secret tunnel
-                  secTun=false;
-               }
-               legit=true;//next turn
-            }
-            if(x==players[p].getX()-1&&y==players[p].getY())//if clicked to left of curr pos
-            {
-               newTile(3);//go left
-               if(secTun)
-               {//un-secret tunnel
-                  secTun=false;
-               }
-               legit=true;//next turn
-            }
-            repaint();
-            if(x==players[p].getX()&&y==players[p].getY())
-               if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
+               if(x==players[p].getX()&&y==players[p].getY()&&grid.get(y,x).canSearch())//if searching
                {
                   if(x==6&&(y==4||y==5))
-                     exeCard("dragon");//if in chamber, dragon card
+                     exeCard("dragon");//if in dragon room, get dragon loot
                   else
-                     exeCard(drawCard((byte)0));//draw and execute a room card
-               }
-               else
-                  if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
                   {
-                     legit=false;
+                     exeCard(drawCard((byte)1));//random search card
+                     grid.get(y,x).search();//increment tile's search
                   }
-         }while(false);
-         if(legit)
-         {
-            p=(p+1)%players.length;//next player.
-            if(p==0)
+                  if(!secTun)
+                     legit=true;
+                  break;//don't check the rest
+               }
+               if(x==players[p].getX()&&y==players[p].getY()&&((x==0&&y==0)||(x==12&&y==0)||(x==0&&y==9)||(x==12&&y==9)))
+               {
+                  legit=true;
+                  break;
+               }
+               if(x==players[p].getX()&&y==players[p].getY()-1)//if clicked above player
+               {
+                  newTile(0);//go up
+                  if(secTun)
+                  {//un-secret tunnel
+                     secTun=false;
+                  }
+                  legit=true;//next turn
+               }
+               if(x==players[p].getX()+1&&y==players[p].getY())//if clicked right of player
+               {
+                  newTile(1);//go right
+                  if(secTun)
+                  {//un-secret tunnel
+                     secTun=false;
+                  }
+                  legit=true;//next turn
+               }
+               if(x==players[p].getX()&&y==players[p].getY()+1)//if clicked below player
+               {
+                  newTile(2);//go down
+                  if(secTun)
+                  {//un-secret tunnel
+                     secTun=false;
+                  }
+                  legit=true;//next turn
+               }
+               if(x==players[p].getX()-1&&y==players[p].getY())//if clicked to left of curr pos
+               {
+                  newTile(3);//go left
+                  if(secTun)
+                  {//un-secret tunnel
+                     secTun=false;
+                  }
+                  legit=true;//next turn
+               }
+               repaint();
+               if(x==players[p].getX()&&y==players[p].getY())
+                  if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
+                  {
+                     if(x==6&&(y==4||y==5))
+                        exeCard("dragon");//if in chamber, dragon card
+                     else
+                        exeCard(drawCard((byte)0));//draw and execute a room card
+                  }
+                  else
+                     if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
+                     {
+                        legit=false;
+                     }
+            }while(false);
+            if(legit)
             {
-               sunLeft--;
-            }
-         }//else keep same player
+               p=(p+1)%players.length;//next player.
+               if(p==0)
+               {
+                  sunLeft--;
+               }
+            }//else keep same player
+         }
+         repaint();
       }
-      repaint();
    }
    //pre: card - identity of card to be processed
    //post: 
@@ -362,7 +370,7 @@ public class QuestBoard extends JPanel implements MouseListener
    {
       if(type==0)
       {
-         int ran=u.ranI(0,50);
+         int ran=u.ranI(0,45);
          if(ran<35)
          {
             return "nothing";
@@ -371,7 +379,7 @@ public class QuestBoard extends JPanel implements MouseListener
          {
             return "goblin";
          }
-         if(ran<45)
+         if(ran<42)
          {
             return "champion";
          }
@@ -395,39 +403,43 @@ public class QuestBoard extends JPanel implements MouseListener
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
-      for(int r=0;r<grid.numRow();r++)
+      if(sunLeft>0)
       {
-         for(int c=0;c<grid.numCol();c++)
+         for(int r=0;r<grid.numRow();r++)
          {
-            drawTile(g,grid.get(r,c),r,c);
-            for(int i=0;i<players.length;i++)
+            for(int c=0;c<grid.numCol();c++)
             {
-               if(players[i].getX()==c && players[i].getY()==r)
+               drawTile(g,grid.get(r,c),r,c);
+               for(int i=0;i<players.length;i++)
                {
-                  switch(i)
+                  if(players[i].getX()==c && players[i].getY()==r)
                   {
-                     case 0:
-                        g.setColor(Color.red);//player 1
-                        break;
-                     case 1:
-                        g.setColor(Color.blue);//player 2
-                        break;
-                     case 2:
-                        g.setColor(Color.green);//player 3
-                        break;
-                     case 3:
-                        g.setColor(Color.orange);//player 4
-                        break;
+                     switch(i)
+                     {
+                        case 0:
+                           g.setColor(Color.red);//player 1
+                           break;
+                        case 1:
+                           g.setColor(Color.blue);//player 2
+                           break;
+                        case 2:
+                           g.setColor(Color.green);//player 3
+                           break;
+                        case 3:
+                           g.setColor(Color.orange);//player 4
+                           break;
+                     }
+                     if(i!=p)//if not curr player
+                        g.setColor(g.getColor().darker());
+                     g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
                   }
-                  if(i!=p)//if not curr player
-                     g.setColor(g.getColor().darker());
-                  g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
                }
             }
          }
+         drawPlayers(g);
+         drawSun(g);
       }
-      drawPlayers(g);
-      drawSun(g);
+      //end game scene
    }
    //post: draws the player cards at bottom of screen. Shows HP and items obtained.
    private void drawPlayers(Graphics g)
