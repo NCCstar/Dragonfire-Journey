@@ -1,6 +1,6 @@
 /*
-todo short: cards: room-, combat
-todo long: room rand
+todo short: Add more room cards
+todo long: Other types of tiles
 todo maybe: music/sounds
 */
 import java.util.*;
@@ -210,7 +210,7 @@ public class QuestBoard extends JPanel implements MouseListener
       u.SOP(card);//DEBUG
       switch(card)
       {
-         case "goblin suprise":
+         case "goblin surprise":
          //attack damage
          case "goblin"://if goblin monster
             //transition
@@ -370,18 +370,22 @@ public class QuestBoard extends JPanel implements MouseListener
    {
       if(type==0)
       {
-         int ran=u.ranI(0,45);
-         if(ran<35)
+         int ran=u.ranI(38,38);//0,40);
+         if(ran<34)
          {
             return "nothing";
          }
-         if(ran<40)
+         if(ran<36)
          {
             return "goblin";
          }
-         if(ran<42)
+         if(ran<37)
          {
             return "champion";
+         }
+         if(ran<39)
+         {
+            return "goblin surprise";
          }
          return "orc";
       }

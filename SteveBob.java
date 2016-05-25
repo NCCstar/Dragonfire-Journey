@@ -8,4 +8,8 @@ public class SteveBob extends Hero
    {
       return "SteveBob";
    }
+   public int getLuck()
+   {
+      return 5;
+   }
 }
