@@ -4,10 +4,16 @@ public class Tile
    private final boolean[] exits;//0=up,1=r,2=d,3=l
    private boolean search1=true;
    private boolean search2=true;
-   public Tile(boolean isRoom,boolean[] exits)
+   private String effect;
+   public Tile(boolean isRoom,boolean[] exits,String eff)
    {
       this.isRoom=isRoom;
       this.exits=exits;
+      effect=eff;
+   }
+   public String getEffect()
+   {
+      return effect;
    }
    public void search()
    {

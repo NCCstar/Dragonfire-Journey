@@ -1,13 +1,51 @@
 import java.util.ArrayList;
-public abstract class Hero
+public class Hero
 {
    private int HP;
    private int x;
    private int y;
+   private final String name;
+   private final int strength;
+   private final int agility;
+   private final int armour;
+   private final int luck;
    private ArrayList<String> bag = new ArrayList();
-   public Hero(int hp,int x,int y)
+   public Hero(String name,int x,int y)
    {
-      HP=hp;
+      this.name=name;
+      switch(name)
+      {
+         case "Ulv Grimhand":
+            strength=7;
+            agility=5;
+            armour=6;
+            luck=5;
+            break;
+         case "El-Adoran Sureshot":
+            strength=3;
+            agility=8;
+            armour=5;
+            luck=7;
+            break;
+         case "Volrik the Brave":
+            strength=4;
+            agility=7;
+            armour=4;
+            luck=8;
+            break;
+         case "Sir Rohan":
+            strength=6;
+            agility=4;
+            armour=9;
+            luck=4;
+            break;
+         default:
+            strength=5;
+            agility=5;
+            armour=5;
+            luck=5;
+            break;
+      }
       this.x=x;
       this.y=y;
    }
@@ -45,6 +83,24 @@ public abstract class Hero
    {
       HP+=dif;
    }
-   public abstract String getName();
-   public abstract int getLuck();
+   public String getName()
+   {
+      return name;
+   }
+   public int getStrength()
+   {
+      return strength;
+   }
+   public int getAgility()
+   {
+      return agility;
+   }
+   public int getArmour()
+   {
+      return armour;
+   }
+   public int getLuck()
+   {
+      return luck;
+   }
 }
