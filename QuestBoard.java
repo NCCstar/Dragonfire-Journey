@@ -17,7 +17,7 @@ public class QuestBoard extends JPanel implements MouseListener
    private int p=0;//player number active
    private boolean secTun=false;//if in secret tunnel mode
    private byte dragonLeft = 8;//dragon cards left
-   private byte sunLeft=27;
+   private byte sunLeft=30;
    public byte getDIM(){
       return DIM;}
    //pre: pNum-number of players, decided by QuestDriver
