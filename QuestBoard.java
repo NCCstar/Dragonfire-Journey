@@ -212,6 +212,22 @@ public class QuestBoard extends JPanel implements MouseListener
       {
          case "goblin surprise":
          //attack damage
+            int ranDamage=u.ranI(0,10)-players[p].getLuck();
+            if(ranDamage>0)
+            {
+               JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\n"+players[p].getName()+" takes "+ranDamage+" damage.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(ranDamage*-1);
+            }
+            else
+            {
+               if(ranDamage>-3)
+                  JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\nBut it misses.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
+               else
+               {
+                  JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\nBut trips and hits himself with his club.\nThe goblin stops moving. You win!","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
+                  break;
+               }
+            }
          case "goblin"://if goblin monster
             //transition
             repaint();
