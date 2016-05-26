@@ -20,24 +20,28 @@ public class Hero
             agility=5;
             armour=6;
             luck=5;
+            HP=16;
             break;
          case "El-Adoran Sureshot":
             strength=3;
             agility=8;
             armour=5;
             luck=7;
+            HP=11;
             break;
          case "Volrik the Brave":
             strength=4;
             agility=7;
             armour=4;
             luck=8;
+            HP=15;
             break;
          case "Sir Rohan":
             strength=6;
             agility=4;
             armour=9;
             luck=4;
+            HP=17;
             break;
          default:
             strength=5;

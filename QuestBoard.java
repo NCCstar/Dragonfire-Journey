@@ -17,7 +17,9 @@ public class QuestBoard extends JPanel implements MouseListener
    private int p=0;//player number active
    private boolean secTun=false;//if in secret tunnel mode
    private byte dragonLeft = 8;//dragon cards left
-   private byte sunLeft=30;
+   private byte sunLeft=30;//game timer. over when this hits 0
+   
+   //post: returns DIM, for driver
    public byte getDIM(){
       return DIM;}
    //pre: pNum-number of players, decided by QuestDriver
@@ -25,7 +27,7 @@ public class QuestBoard extends JPanel implements MouseListener
    public QuestBoard(int pNum)
    {
       addMouseListener(this);
-   
+      //create master board
       grid=new SparseMatrix(10,13);
       //add starting tiles: dragon lair
       grid.add(4,6,new Tile(true,new boolean[]{true,true,true,true},"lair"));
@@ -38,18 +40,18 @@ public class QuestBoard extends JPanel implements MouseListener
       //define players
       players=new Hero[pNum];
       ArrayList<Object> listHeroes = new ArrayList();
+      //list of availible heroes
       listHeroes.add("Ulv Grimhand");
       listHeroes.add("El-Adoran Sureshot");
       listHeroes.add("Volrik the Brave");
       listHeroes.add("Sir Rohan");
       for(int i=0;i<players.length;i++)
       {
-         //choose players - switch
-         Object[] options = listHeroes.toArray();
+         Object[] options = listHeroes.toArray();//display to screen options
          Object obj = JOptionPane.showInputDialog(null,"Player "+(i+1)+", choose a hero.","Hero Choice",JOptionPane.INFORMATION_MESSAGE, null,options, options[0]);
-         listHeroes.remove(obj);
+         listHeroes.remove(obj);//remove chosen hero
          switch(i)
-         {
+         {//create hero at appropriate location
             case 1:
                players[i]=new Hero((String)obj,12,0);
                break;
@@ -98,6 +100,15 @@ public class QuestBoard extends JPanel implements MouseListener
             while(!(doors[0]||doors[1]||doors[2]||doors[3]));//while not at least one exit
             
             String effect=null;
+            int ranEffect=u.ranI(0,20);
+            if(ranEffect>19)
+               effect="trap";
+            else
+               if(ranEffect>18)
+                  effect="rotate";
+               else
+                  if(ranEffect>17)
+                     effect="black";
             
             if(oneTrue(doors))
                grid.add(players[p].getY(),players[p].getX(),new Tile(true,doors,effect));
@@ -122,6 +133,8 @@ public class QuestBoard extends JPanel implements MouseListener
       }
       return count==1;
    }
+   //pre: e: contains location of the click
+   //post: called whenever mouse is clicked. controls movement, searching, and passing turn
    public void mouseClicked(MouseEvent e)
    {
       if(sunLeft>0)
@@ -205,27 +218,31 @@ public class QuestBoard extends JPanel implements MouseListener
             }while(false);
             if(legit)
             {
-               p=(p+1)%players.length;//next player.
-               if(p==0)
-               {
-                  sunLeft--;
-               }
+               passTurn();
             }//else keep same player
          }
          else
             if(x>=players.length*2&&x<players.length*2+3&&y>=10&&y<12)
             {
-               p=(p+1)%players.length;//next player.
-               if(p==0)
-               {
-                  sunLeft--;
-               }
+               passTurn();
             }
          repaint();
       }
    }
+   //post: changes turn- skips dead players and increments sun
+   private void passTurn()
+   {
+      do
+      {
+         p=(p+1)%players.length;//next player.
+         if(p==0)
+         {
+            sunLeft--;
+         }
+      }while(players[p].getHP()<=0);
+   }
    //pre: card - identity of card to be processed
-   //post: 
+   //post: executes given card
    private void exeCard(String card)
    {
       switch(card)
@@ -296,6 +313,8 @@ public class QuestBoard extends JPanel implements MouseListener
             break;
       }
    }
+   //pre: enemyName: name of creature fighting, enemyHP: inital health of enemy
+   //post: battle loop, will end once player or monster dies
    private void battle(String enemyName,byte enemyHP)
    {
       while(players[p].getHP()>0&&enemyHP>0)
@@ -406,7 +425,8 @@ public class QuestBoard extends JPanel implements MouseListener
          repaint();
       }
    }
-   //post: returns random room card
+   //pre: type: type of card to be returned. 
+   //post: returns random card indicated by type
    private String drawCard(byte type)//0=room,1==search
    {
       if(type==0)
@@ -449,6 +469,7 @@ public class QuestBoard extends JPanel implements MouseListener
       }
       return "nothing";
    }
+   //post: master painting method - draws grid and info to screen
    public void paintComponent(Graphics g)
    {
       super.paintComponent(g);
@@ -479,6 +500,12 @@ public class QuestBoard extends JPanel implements MouseListener
                   if(i!=p)//if not curr player
                      g.setColor(g.getColor().darker());
                   g.fillRect(c*DIM+DIM/3,r*DIM+DIM/3,(int)(DIM-DIM/1.5),(int)(DIM-DIM/1.5));
+                  if(players[i].getHP()<=0)
+                  {
+                     g.setColor(Color.red.brighter());
+                     g.drawLine(c*DIM+DIM/4,r*DIM+DIM/4,(c+1)*DIM-DIM/4,(r+1)*DIM-DIM/4);
+                     g.drawLine(c*DIM+DIM/4,(r+1)*DIM-DIM/4,(c+1)*DIM-DIM/4,r*DIM+DIM/4);
+                  }
                }
             }
          }
@@ -533,6 +560,7 @@ public class QuestBoard extends JPanel implements MouseListener
          }
       }
    }
+   //post: draws sun box with number turn left
    private void drawSun(Graphics g)
    {
       g.setColor(Color.yellow);
@@ -554,6 +582,8 @@ public class QuestBoard extends JPanel implements MouseListener
       x.setColor(new Color(r,g,b));
       return x;
    }
+   //pre: tile-a tile to be drawn, y and x - top-left corner of where to draw
+   //post: draw given tile to screen at given coordinates
    private void drawTile(Graphics g,Tile tile,int y,int x)
    {
       g.setColor(Color.black);
@@ -578,6 +608,10 @@ public class QuestBoard extends JPanel implements MouseListener
                   break;
                case "trap":
                   g.setColor(Color.red);
+                  break;
+               case "black":
+                  g.setColor(Color.darkGray);
+                  break;
                default:
                   if(tile.canSearch())
                      g.setColor(Color.white);
