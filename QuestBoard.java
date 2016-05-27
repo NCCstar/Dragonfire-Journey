@@ -104,20 +104,41 @@ public class QuestBoard extends JPanel implements MouseListener
             if(ranEffect>19)
                effect="trap";
             else
-               if(ranEffect>18)
+               if(ranEffect>18&&oneTrue(doors))
                   effect="rotate";
                else
                   if(ranEffect>17)
                      effect="black";
             
             if(oneTrue(doors))
+            {
                grid.add(players[p].getY(),players[p].getX(),new Tile(true,doors,effect));
+            }
             else
                grid.add(players[p].getY(),players[p].getX(),new Tile(u.ranB(.9),doors,effect));//add tile
             
             while(!grid.get(players[p].getY(),players[p].getX()).getExits()[opp])//while no exit on this side
             {
                grid.get(players[p].getY(),players[p].getX()).rotate();//rotate the tile
+            }
+         }
+         String effect=grid.get(players[p].getY(),players[p].getX()).getEffect();
+         if(effect!=null)
+         {
+            repaint();
+            switch(effect)
+            {
+               case "rotate":
+                  JOptionPane.showMessageDialog(null,"The room rotates.","What!?!",JOptionPane.INFORMATION_MESSAGE);
+                  grid.get(players[p].getY(),players[p].getX()).rotate().rotate();
+                  break;
+               case "dark":
+                  JOptionPane.showMessageDialog(null,"You can't see through the dark fog int the room.","*Waves hand in front of face*",JOptionPane.INFORMATION_MESSAGE);
+                  break;
+               case "trap":
+                  JOptionPane.showMessageDialog(null,"A trap activates in the room!","Dangnabbit",JOptionPane.INFORMATION_MESSAGE);
+                  exeCard(drawCard((byte)3));
+                  break;
             }
          }
       }
@@ -257,7 +278,7 @@ public class QuestBoard extends JPanel implements MouseListener
             }
             else
             {
-               if(ranDamage>=-3)
+               if(ranDamage>-3)
                   JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\nBut it misses.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
                else
                {
@@ -568,6 +589,7 @@ public class QuestBoard extends JPanel implements MouseListener
       g=setTextColor(g);
       g.setFont(new Font(null,0,DIM));
       g.drawString(sunLeft+"",DIM*(players.length*2+1),(int)(DIM*11.5));
+      //g.drawString("See This",0,0);
    }
    //pre: x is Graphics with color to be inverted
    //post: x has a rgb-inverted color
@@ -607,7 +629,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   g.setColor(Color.yellow.darker());
                   break;
                case "trap":
-                  g.setColor(Color.red);
+                  g.setColor(Color.pink.darker());
                   break;
                case "black":
                   g.setColor(Color.darkGray);

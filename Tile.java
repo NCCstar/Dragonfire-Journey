@@ -41,7 +41,7 @@ public class Tile
       return exits;
    }
    //param: n: number of times to be rotated
-   public void rotate()
+   public Tile rotate()
    {
       boolean[] temp=new boolean[4];
       for(int i=0;i<temp.length;i++)
@@ -52,5 +52,6 @@ public class Tile
       exits[3]=temp[2];
       exits[2]=temp[1];
       exits[1]=temp[0];
+      return this;
    }
 }
