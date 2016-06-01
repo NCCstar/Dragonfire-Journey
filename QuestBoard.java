@@ -17,7 +17,7 @@ public class QuestBoard extends JPanel implements MouseListener
    private int p=0;//player number active
    private boolean secTun=false;//if in secret tunnel mode
    private byte dragonLeft = 8;//dragon cards left
-   private byte sunLeft=30;//game timer. over when this hits 0
+   private byte sunLeft=30;//game timer. game over when this hits 0
    
    //post: returns DIM, for driver
    public byte getDIM(){
@@ -101,7 +101,7 @@ public class QuestBoard extends JPanel implements MouseListener
             
             String effect=null;
             int ranEffect=u.ranI(0,20);
-            if(ranEffect>19)
+            if(ranEffect>5)
                effect="trap";
             else
                if(ranEffect>18&&oneTrue(doors))
@@ -229,7 +229,8 @@ public class QuestBoard extends JPanel implements MouseListener
                      if(x==6&&(y==4||y==5))
                         exeCard("dragon");//if in chamber, dragon card
                      else
-                        exeCard(drawCard((byte)0));//draw and execute a room card
+                        if(!grid.get(players[p].getY(),players[p].getX()).getEffect().equals("trap"))
+                           exeCard(drawCard((byte)0));//draw and execute a room card
                   }
                   else
                      if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
@@ -266,19 +267,20 @@ public class QuestBoard extends JPanel implements MouseListener
    //post: executes given card
    private void exeCard(String card)
    {
+      int damage;
       switch(card)
       {
          case "goblin surprise":
          //attack damage
-            int ranDamage=u.ranI(1,12)-players[p].getLuck();
-            if(ranDamage>0)
+            damage=u.ranI(1,12)-players[p].getLuck();
+            if(damage>0)
             {
-               JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\n"+players[p].getName()+" takes "+ranDamage+" damage.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
-               players[p].changeHP(ranDamage*-1);
+               JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\n"+players[p].getName()+" takes "+damage+" damage.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(damage*-1);
             }
             else
             {
-               if(ranDamage>-3)
+               if(damage>-3)
                   JOptionPane.showMessageDialog(null,"A goblin reforms a sneak attack!\nBut it misses.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
                else
                {
@@ -304,8 +306,9 @@ public class QuestBoard extends JPanel implements MouseListener
          case "dragon":
             if(u.ranI(0,dragonLeft)==0)//if random between 0 and num of dragon cards left is 0
             {//wake up dragon
-               JOptionPane.showMessageDialog(null,"The dragon awakes!","ROAAAR!!",JOptionPane.INFORMATION_MESSAGE);
-               players[p].changeHP(u.ranI(-10,-20));//deal 10-20 damage
+               damage=u.ranI(10,20);
+               JOptionPane.showMessageDialog(null,"The dragon awakes!\n"+players[p].getName()+"takes "+damage+" damage.","ROAAAR!!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(-1*damage);//deal 10-20 damage
             }
             else
             {//else
@@ -325,10 +328,66 @@ public class QuestBoard extends JPanel implements MouseListener
             secTun=true;
             break;
          case "centipede":
-            int damage=u.ranI(1,12);
-            JOptionPane.showMessageDialog(null,"A giant centipede attacks!\n"+players[p].getName()+" loses "+damage+" life.","Eureka!",JOptionPane.INFORMATION_MESSAGE);
+            damage=u.ranI(1,12);
+            JOptionPane.showMessageDialog(null,"A giant centipede attacks!\n"+players[p].getName()+" loses "+damage+" life.","Munch!",JOptionPane.INFORMATION_MESSAGE);
             players[p].changeHP(-1*damage);
             break;
+         case "cave-in":
+            damage=u.ranI(1,10)-players[p].getLuck();
+            if(damage>0)
+            {
+               JOptionPane.showMessageDialog(null,"A cave-in is triggered!\n"+players[p].getName()+" loses "+damage+" life.","Crash!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(-1*damage);
+            }
+            else
+               if(damage<-3)
+               {
+                  JOptionPane.showMessageDialog(null,"A cave-in is triggered!\n"+players[p].getName()+" freezes with fear and is miraculously untouched.\nThe cave-in reveals something.","Crash!",JOptionPane.INFORMATION_MESSAGE);
+                  exeCard("gold");
+               }
+               else
+               {
+                  JOptionPane.showMessageDialog(null,"A cave-in is triggered!\n"+players[p].getName()+" freezes with fear and is miraculously untouched.","Crash!",JOptionPane.INFORMATION_MESSAGE);
+               }
+         case "darts":
+            damage=u.ranI(1,10)-players[p].getAgility();
+            if(damage>0)
+            {
+               JOptionPane.showMessageDialog(null,"Darts shoot out from the walls!\n"+players[p].getName()+" loses "+damage+" life.","Thwoop!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(-1*damage);
+            }
+            else
+               if(damage<-3)
+               {
+                  JOptionPane.showMessageDialog(null,"Darts shoot out from the walls!\n"+players[p].getName()+" jumps out of the way!\nThe hero salvages something from the darts.","Thwoop!",JOptionPane.INFORMATION_MESSAGE);
+                  exeCard("potion");
+               }
+               else
+               {
+                  JOptionPane.showMessageDialog(null,"Darts shoot out from the walls!\n"+players[p].getName()+" jumps out of the way!","Thwoop!",JOptionPane.INFORMATION_MESSAGE);
+               }
+
+            break;
+         case "explosion":
+         damage=u.ranI(1,10)-players[p].getAgility();
+            if(damage>0)
+            {
+               JOptionPane.showMessageDialog(null,"An explosion suddenly rocks the room.\n"+players[p].getName()+" loses "+damage+" life.","Bang!",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(-1*damage);
+            }
+            else
+               if(damage<-3)
+               {
+                  JOptionPane.showMessageDialog(null,"An explosion suddenly rocks the room.\n"+players[p].getName()+"'s armour blocks the blast.\nThe explosion reveals a secret door!","Bang!",JOptionPane.INFORMATION_MESSAGE);
+                  exeCard("secret tunnel");
+               }
+               else
+               {
+                  JOptionPane.showMessageDialog(null,"An explosion suddenly rocks the room.\n"+players[p].getName()+"'s armour blocks the blast.","Bang!",JOptionPane.INFORMATION_MESSAGE);
+               }
+
+         break;
+         //"golem";//strength
          case "nothing"://blank room/search card
             JOptionPane.showMessageDialog(null,"Nothing happens.","Phew",JOptionPane.INFORMATION_MESSAGE); 
             break;
@@ -448,7 +507,7 @@ public class QuestBoard extends JPanel implements MouseListener
    }
    //pre: type: type of card to be returned. 
    //post: returns random card indicated by type
-   private String drawCard(byte type)//0=room,1==search
+   private String drawCard(byte type)//0=room,1=search,2=trap
    {
       if(type==0)
       {
@@ -487,6 +546,17 @@ public class QuestBoard extends JPanel implements MouseListener
             return "secret tunnel";
          }
          return "gold";
+      }
+      if(type==2)
+      {
+         int ran=u.ranI(0,3);
+         if(ran>2)
+            return "cave-in";//luck
+         if(ran>1)
+            return "darts";//agility
+         if(ran>0)
+            return "explosion";//armour
+         return "golem";//strength
       }
       return "nothing";
    }
