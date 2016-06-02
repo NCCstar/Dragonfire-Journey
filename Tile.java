@@ -10,6 +10,11 @@ public class Tile
       this.isRoom=isRoom;
       this.exits=exits;
       effect=eff;
+      if(effect!=null&&!effect.equals("rotate"))
+      {
+         search1=false;
+         search2=false;
+      }
    }
    public String getEffect()
    {
