@@ -385,7 +385,25 @@ public class QuestBoard extends JPanel implements MouseListener
                {
                   JOptionPane.showMessageDialog(null,"An explosion suddenly rocks the room.\n"+players[p].getName()+"'s armour blocks the blast.","Bang!",JOptionPane.INFORMATION_MESSAGE);
                }
-
+         break;
+         case "golem":
+         JOptionPane.showMessageDialog(null,"A golem appears from the floor of the room!\n"+players[p].getName()+"Attacks it.","Rock Monster!",JOptionPane.INFORMATION_MESSAGE);
+         damage=u.ranI(1,10)-players[p].getStrength();
+         if(damage>0)
+            {
+               JOptionPane.showMessageDialog(null,"The golem, with the last of its strength, punches back.\n"+players[p].getName()+" loses "+damage+" life.\nThe golem crumbles to dust.","Crumble...",JOptionPane.INFORMATION_MESSAGE);
+               players[p].changeHP(-1*damage);
+            }
+            else
+               if(damage<-3)
+               {
+                  JOptionPane.showMessageDialog(null,"The golem is destroyed with one punch.\nThe golem crumbles to dust, revealing SOMETHING.","Crumble...",JOptionPane.INFORMATION_MESSAGE);
+                  exeCard("secret tunnel");
+               }
+               else
+               {
+                  JOptionPane.showMessageDialog(null,"The golem is destroyed with one punch.\nThe golem crumbles to dust.","Crumble...",JOptionPane.INFORMATION_MESSAGE);
+               }
          break;
          //"golem";//strength
          case "nothing"://blank room/search card
