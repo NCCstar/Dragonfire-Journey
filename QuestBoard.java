@@ -72,6 +72,25 @@ public class QuestBoard extends JPanel implements MouseListener
    private boolean newTile(int dir)
    {
       int opp=(dir+2)%4;//opposite direction
+      switch(dir)
+      {
+         case 0:
+            if(players[p].getY()<=0)
+               return false;
+            break;
+         case 1:
+            if(players[p].getX()>=12)
+               return false;
+            break;
+         case 2:
+            if(players[p].getY()>=9)
+               return false;
+            break;
+         case 3:
+            if(players[p].getX()<=0)
+               return false;
+            break;
+      }
       if(grid.get(players[p].getY(),players[p].getX()).getExits()[dir]||secTun)//if this room has dir exit or in secTun mode
       {
          switch(dir)
@@ -109,8 +128,8 @@ public class QuestBoard extends JPanel implements MouseListener
                   if(ranEffect>17)
                      effect="trap";
                   else
-                     if(ranEffect>0)
-                        effect="black";
+                     if(ranEffect>16)
+                        effect="dark";
                         
             }
             if(oneTrue(doors))
@@ -182,6 +201,22 @@ public class QuestBoard extends JPanel implements MouseListener
                   {
                      ranDir=u.ranI(0,3);
                   }
+                  repaint();
+                  legit=true;
+                  if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
+                  {
+                     if(x==6&&(y==4||y==5))
+                        exeCard("dragon");//if in chamber, dragon card
+                     else
+                        if(grid.get(players[p].getY(),players[p].getX()).getEffect()==null)//if normal space
+                           exeCard(drawCard((byte)0));//draw and execute a room card
+                  }
+                  else
+                     if(!grid.get(players[p].getY(),players[p].getX()).isRoom())//if corridor
+                     {
+                        legit=false;
+                     }
+               
                   break;
                }
                if(x==players[p].getX()&&y==players[p].getY()&&grid.get(y,x).canSearch())//if searching
@@ -239,7 +274,7 @@ public class QuestBoard extends JPanel implements MouseListener
                   legit=true;//next turn
                }
                repaint();
-               if(x==players[p].getX()&&y==players[p].getY())
+               if(x==players[p].getX()&&y==players[p].getY())//if where user pointed
                   if(grid.get(players[p].getY(),players[p].getX()).isRoom())//if this is not a corridor
                   {
                      if(x==6&&(y==4||y==5))
@@ -260,10 +295,42 @@ public class QuestBoard extends JPanel implements MouseListener
             }//else keep same player
          }
          else
+         {
             if(x>=players.length*2&&x<players.length*2+3&&y>=10&&y<12)
             {
                passTurn();
             }
+            if(x>=p*2&&x<p+3&&y>=10&&y<12)//click on own portrait
+            {
+               ArrayList<Object> preop = new ArrayList();
+               preop.add("Nevermind");
+               for(String ele:players[p].getBag())
+               {
+                  try
+                  {
+                     Integer.parseInt(ele.substring(0,ele.length()-1));
+                  }
+                  catch(Exception ex)
+                  {
+                     preop.add(ele);
+                  }
+               }
+               if(preop.size()<=1)
+               {
+                  JOptionPane.showMessageDialog(null,"You have no items to use.","Has no items in item bag.",JOptionPane.INFORMATION_MESSAGE);
+               }
+               else
+               {
+                  Object[] options=preop.toArray();
+                  String toUse=(String)JOptionPane.showInputDialog(null,"Choose an item to use.","Items in item bag.",JOptionPane.INFORMATION_MESSAGE, null,options, options[0]);
+                  if(toUse.equals("Potion"))
+                  {
+                     players[p].changeHP(5);
+                  }
+                  players[p].getBag().remove(toUse);
+               }
+            }
+         }  
          repaint();
       }
    }
@@ -278,6 +345,29 @@ public class QuestBoard extends JPanel implements MouseListener
             sunLeft--;
          }
       }while(players[p].getHP()<=0);
+      if(sunLeft<=0)//end of game execution
+      {
+         int[] scores = new int[players.length];
+         for(int i=0;i<players.length;i++)
+         {
+            for(String ele:players[i].getBag())
+            {
+               try
+               {
+                  scores[i]+=Integer.parseInt(ele.substring(0,ele.length()-1));
+               }
+               catch(Exception e){}
+            }
+            int pY=players[i].getY();
+            int pX=players[i].getX();
+            if(grid.get(pY,pX).getEffect()==null||!grid.get(pY,pX).getEffect().equals("start"))
+            {
+               scores[i]=-1;
+            }
+            if(scores[i]>scores[p])
+               p=i;
+         }
+      }
    }
    //pre: card - identity of card to be processed
    //post: executes given card
@@ -296,7 +386,7 @@ public class QuestBoard extends JPanel implements MouseListener
             }
             else
             {
-               if(damage>-3)
+               if(damage>=-3)
                   JOptionPane.showMessageDialog(null,"A goblin performs a sneak attack!\nBut it misses.","Sneak Attack!",JOptionPane.INFORMATION_MESSAGE);
                else
                {
@@ -339,6 +429,10 @@ public class QuestBoard extends JPanel implements MouseListener
             JOptionPane.showMessageDialog(null,"You find gold.","Eureka!",JOptionPane.INFORMATION_MESSAGE);
             players[p].getBag().add(gold+"G");
             break;
+         case "potion":
+            JOptionPane.showMessageDialog(null,"You find a potion.","Delicous!",JOptionPane.INFORMATION_MESSAGE);
+            players[p].getBag().add("Potion");
+            break;
          case "secret tunnel":
             JOptionPane.showMessageDialog(null,"You find a secret passage. Move to an adjecent space.","Secret Tunnel!",JOptionPane.INFORMATION_MESSAGE);
             secTun=true;
@@ -356,7 +450,7 @@ public class QuestBoard extends JPanel implements MouseListener
                players[p].changeHP(-1*damage);
             }
             else
-               if(damage<-3)
+               if(damage<=-3)
                {
                   JOptionPane.showMessageDialog(null,"A cave-in is triggered!\n"+players[p].getName()+" freezes with fear and is miraculously untouched.\nThe cave-in reveals something.","Crash!",JOptionPane.INFORMATION_MESSAGE);
                   exeCard("gold");
@@ -374,7 +468,7 @@ public class QuestBoard extends JPanel implements MouseListener
                players[p].changeHP(-1*damage);
             }
             else
-               if(damage<-3)
+               if(damage<=-3)
                {
                   JOptionPane.showMessageDialog(null,"Darts shoot out from the walls!\n"+players[p].getName()+" jumps out of the way!\nThe hero salvages something from the darts.","Thwoop!",JOptionPane.INFORMATION_MESSAGE);
                   exeCard("potion");
@@ -392,7 +486,7 @@ public class QuestBoard extends JPanel implements MouseListener
                players[p].changeHP(-1*damage);
             }
             else
-               if(damage<-3)
+               if(damage<=-3)
                {
                   JOptionPane.showMessageDialog(null,"An explosion suddenly rocks the room.\n"+players[p].getName()+"'s armour blocks the blast.\nThe explosion reveals a secret door!","Bang!",JOptionPane.INFORMATION_MESSAGE);
                   exeCard("secret tunnel");
@@ -403,7 +497,7 @@ public class QuestBoard extends JPanel implements MouseListener
                }
             break;
          case "golem":
-            JOptionPane.showMessageDialog(null,"A golem appears from the floor of the room!\n"+players[p].getName()+"Attacks it.","Rock Monster!",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(null,"A golem appears from the floor of the room!\n"+players[p].getName()+" attacks it.","Rock Monster!",JOptionPane.INFORMATION_MESSAGE);
             damage=u.ranI(1,10)-players[p].getStrength();
             if(damage>0)
             {
@@ -411,10 +505,13 @@ public class QuestBoard extends JPanel implements MouseListener
                players[p].changeHP(-1*damage);
             }
             else
-               if(damage<-3)
+               if(damage<=-3)
                {
-                  JOptionPane.showMessageDialog(null,"The golem is destroyed with one punch.\nThe golem crumbles to dust, revealing SOMETHING.","Crumble...",JOptionPane.INFORMATION_MESSAGE);
-                  exeCard("secret tunnel");
+                  JOptionPane.showMessageDialog(null,"The golem is destroyed with one punch.\nThe golem crumbles to dust, revealing something.","Crumble...",JOptionPane.INFORMATION_MESSAGE);
+                  if(Math.random()<.5)
+                     exeCard("gold");
+                  else
+                     exeCard("potion");
                }
                else
                {
@@ -567,13 +664,17 @@ public class QuestBoard extends JPanel implements MouseListener
       if(type==1)
       {
          int ran=u.ranI(0,45);
-         if(ran<30)
+         if(ran<25)
          {
             return "nothing";
          }
-         if(ran<35)
+         if(ran<28)
          {
             return "centipede";
+         }
+         if(ran<30)
+         {
+            return "potion";
          }
          if(ran<40)
          {
@@ -642,7 +743,7 @@ public class QuestBoard extends JPanel implements MouseListener
       }
       else
       {
-         
+         drawWinner(g);
       }
       //end game scene
    }
@@ -695,6 +796,14 @@ public class QuestBoard extends JPanel implements MouseListener
       g.drawString(sunLeft+"",DIM*(players.length*2+1),(int)(DIM*11.5));
       //g.drawString("See This",0,0);
    }
+   private void drawWinner(Graphics g)
+   {
+      g.setColor(Color.yellow);
+      g.fillRect(DIM*(players.length*2),DIM*10,DIM*3,DIM*2);
+      g=setTextColor(g);
+      g.setFont(new Font(null,0,DIM));
+      g.drawString("Player "+(p+1)+" wins!",DIM*(players.length*2),(int)(DIM*11.5));
+   }
    //pre: x is Graphics with color to be inverted
    //post: x has a rgb-inverted color
    private Graphics setTextColor(Graphics x)
@@ -735,7 +844,7 @@ public class QuestBoard extends JPanel implements MouseListener
                case "trap":
                   g.setColor(Color.pink.darker());
                   break;
-               case "black":
+               case "dark":
                   g.setColor(Color.darkGray);
                   break;
                default:
