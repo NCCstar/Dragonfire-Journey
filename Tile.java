@@ -2,8 +2,8 @@ public class Tile
 {
    private final boolean isRoom;
    private final boolean[] exits;//0=up,1=r,2=d,3=l
-   private boolean search1=true;
-   private boolean search2=true;
+   private boolean search1=true;//has been searched once
+   private boolean search2=true;//has been searhced twice
    private String effect;
    public Tile(boolean isRoom,boolean[] exits,String eff)
    {
@@ -11,7 +11,7 @@ public class Tile
       this.exits=exits;
       effect=eff;
       if(effect!=null&&!effect.equals("rotate"))
-      {
+      {//special rooms can't be searched
          search1=false;
          search2=false;
       }
@@ -20,17 +20,15 @@ public class Tile
    {
       return effect;
    }
-   public void search()
+   public void search()//increments search counter
    {
       if(search1)
       {
          search1=false;
-         u.SOP("Searched once.");
       }
       else
       {
          search2=false;
-         u.SOP("Searched twice");
       }
    }
    public boolean canSearch()
@@ -45,7 +43,7 @@ public class Tile
    {
       return exits;
    }
-   //param: n: number of times to be rotated
+   //post: rotates the exits of the tile once.
    public Tile rotate()
    {
       boolean[] temp=new boolean[4];
@@ -57,6 +55,6 @@ public class Tile
       exits[3]=temp[2];
       exits[2]=temp[1];
       exits[1]=temp[0];
-      return this;
+      return this;//for rotating twice. :-)
    }
 }

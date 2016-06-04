@@ -14,7 +14,7 @@ public class Hero
    {
       this.name=name;
       switch(name)
-      {
+      {//character stat set depending on name
          case "Ulv Grimhand":
             strength=7;
             agility=5;
@@ -43,7 +43,7 @@ public class Hero
             luck=4;
             HP=17;
             break;
-         default:
+         default://default character (sucks)
             strength=5;
             agility=5;
             armour=5;

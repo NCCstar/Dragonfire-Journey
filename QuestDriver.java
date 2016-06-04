@@ -4,11 +4,11 @@ public class QuestDriver
    private static QuestBoard board;
    public static void main(String[] args)
    {
-      Object[] options = {1,2,3,4};
+      Object[] options = {1,2,3,4};//possible player numbers
       while(true)
       {
          try
-         {
+         {//creation loop
             board = new QuestBoard((Integer)(JOptionPane.showInputDialog(null,"How many players?","Players",JOptionPane.INFORMATION_MESSAGE, null,options, options[0])));
             break;
          }
