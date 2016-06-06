@@ -349,6 +349,7 @@ public class QuestBoard extends JPanel implements MouseListener
       }while(players[p].getHP()<=0);//skip players with no hp
       if(sunLeft<=0)//end of game execution
       {
+         p=-1;
          int high = -1;//remembers 
          for(int i=0;i<players.length;i++)
          {//go through all players
@@ -365,11 +366,12 @@ public class QuestBoard extends JPanel implements MouseListener
             int pX=players[i].getX();
             if(grid.get(pY,pX).getEffect()==null||!grid.get(pY,pX).getEffect().equals("start")||players[i].getHP()<=0)
             {//if not on start tile or zero HP
-               score=-1;
+               score=-2;
+               players[i].changeHP(-1*players[i].getHP());
             }
             if(score>high)
                p=i;//set current winner
-         }
+         }//if no winner, p= -1
       }
    }
    //pre: card - identity of card to be processed
@@ -804,7 +806,10 @@ public class QuestBoard extends JPanel implements MouseListener
       g.fillRect(DIM*(players.length*2),DIM*10,DIM*3,DIM*2);//draw backgound
       g=setTextColor(g);//set opposite text color
       g.setFont(new Font(null,0,DIM));
-      g.drawString("Player "+(p+1)+" wins!",DIM*(players.length*2),(int)(DIM*11.5));//display winner
+      if(p!=-1)//if there is a winner
+         g.drawString("Player "+(p+1)+" wins!",DIM*(players.length*2),(int)(DIM*11.5));//display winner
+      else
+         g.drawString("No one wins!",DIM*(players.length*2),(int)(DIM*11.5));//display winner
    }
    //pre: x is Graphics with color to be inverted
    //post: x has a rgb-inverted color
