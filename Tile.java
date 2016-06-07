@@ -43,18 +43,20 @@ public class Tile
    {
       return exits;
    }
-   //post: rotates the exits of the tile once.
-   public Tile rotate()
+   //post: rotates the exits of the tile n times.
+   public void rotate(int n)
    {
-      boolean[] temp=new boolean[4];
-      for(int i=0;i<temp.length;i++)
+      for(int k=0;k<n;k++)
       {
-         temp[i]=exits[i];
+         boolean[] temp=new boolean[4];
+         for(int i=0;i<temp.length;i++)
+         {
+            temp[i]=exits[i];
+         }
+         exits[0]=temp[3];
+         exits[3]=temp[2];
+         exits[2]=temp[1];
+         exits[1]=temp[0];
       }
-      exits[0]=temp[3];
-      exits[3]=temp[2];
-      exits[2]=temp[1];
-      exits[1]=temp[0];
-      return this;//for rotating twice. :-)
    }
 }

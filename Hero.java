@@ -65,6 +65,7 @@ public class Hero
    {
       return bag;
    }
+   //if right is true, move right, else move left
    public void moveX(boolean right)
    {
       if(right)
@@ -72,6 +73,7 @@ public class Hero
       else
          x--;
    }
+   //if down is true, move down, else move up
    public void moveY(boolean down)
    {
       if(down)
@@ -83,6 +85,7 @@ public class Hero
    {
       return HP;
    }
+   //post: changes HP by dif amount. 
    public void changeHP(int dif)
    {
       HP+=dif;

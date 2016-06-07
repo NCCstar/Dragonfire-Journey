@@ -117,19 +117,20 @@ public class QuestBoard extends JPanel implements MouseListener
                doors = new boolean[]{u.ranB(.65),u.ranB(.65),u.ranB(.65),u.ranB(.65)};//re-random
             }
             while(!(doors[0]||doors[1]||doors[2]||doors[3]));//while not at least one exit
-            boolean isRoom=u.ranB(.9);//90% chance of being room
+            boolean isRoom=u.ranB(.85);//85% chance of being room
             String effect=null;//special tiles
             int ranEffect=u.ranI(0,20);//random effect number
             if(isRoom)
             {
-               if(ranEffect>18&&oneTrue(doors))//10%+only one exit
-                  effect="rotate";//rotating room
+               if(ranEffect>19)//5%
+                  effect="trap";//trap room
                else
-                  if(ranEffect>17)//5%
-                     effect="trap";//trap room
+                  if(ranEffect>18&&!oneTrue(doors))//5% & more than one exit
+                     effect="dark";//dark room
                   else
-                     if(ranEffect>16&&!oneTrue(doors))//5%+not one exit
-                        effect="dark";//dark room
+                     if(ranEffect>16&&oneTrue(doors))//10% & one exit
+                        effect="rotate";//rotating room
+                        
                         
             }
             if(oneTrue(doors))//ensures can't have a one exit corridor
@@ -141,7 +142,7 @@ public class QuestBoard extends JPanel implements MouseListener
             
             while(!grid.get(players[p].getY(),players[p].getX()).getExits()[opp])//while no exit on this side
             {
-               grid.get(players[p].getY(),players[p].getX()).rotate();//rotate the tile
+               grid.get(players[p].getY(),players[p].getX()).rotate(1);//rotate the tile
             }
          }
          //regardless of adding new tile, check tile effect
@@ -153,7 +154,7 @@ public class QuestBoard extends JPanel implements MouseListener
             {
                case "rotate":
                   JOptionPane.showMessageDialog(null,"The room rotates.","What!?!",JOptionPane.INFORMATION_MESSAGE);
-                  grid.get(players[p].getY(),players[p].getX()).rotate().rotate();//rotate 180 degree
+                  grid.get(players[p].getY(),players[p].getX()).rotate(2);//rotate 180 degree
                   break;
                case "dark":
                   JOptionPane.showMessageDialog(null,"You can't see through the dark fog in the room.","*Waves hand in front of face*",JOptionPane.INFORMATION_MESSAGE);
@@ -418,7 +419,6 @@ public class QuestBoard extends JPanel implements MouseListener
             if(u.ranI(0,dragonLeft)==0)//if random between 0 and num of dragon cards left is 0
             {//wake up dragon
                damage=u.ranI(10,20);
-               dragonLeft--;//decrease dragon cards left
                JOptionPane.showMessageDialog(null,"The dragon awakes!\n"+players[p].getName()+"takes "+damage+" damage.","ROAAAR!!",JOptionPane.INFORMATION_MESSAGE);
                players[p].changeHP(-1*damage);//deal 10-20 damage
             }
@@ -429,6 +429,18 @@ public class QuestBoard extends JPanel implements MouseListener
                JOptionPane.showMessageDialog(null,"You snatch "+gold+"G of the dragon's treasure.","ZZzzzz",JOptionPane.INFORMATION_MESSAGE);
                players[p].getBag().add(gold+"G");//add gold to bag
             }
+            break;
+         case "wizard":
+            int num=u.ranI(1,3);
+            for(int r=0;r<grid.numRow();r++)
+            {
+               for(int c=0;c<grid.numCol();c++)
+               {
+                  if(grid.get(r,c)!=null&&!grid.get(r,c).isRoom())
+                     grid.get(r,c).rotate(num);
+               }
+            }
+            JOptionPane.showMessageDialog(null,"An evil wizard caused all corridors to rotate!","Waazap!",JOptionPane.INFORMATION_MESSAGE);
             break;
          case "gold":
             int gold = u.ranI(1,90)*10;//ran found gold
@@ -648,9 +660,13 @@ public class QuestBoard extends JPanel implements MouseListener
       if(type==0)
       {
          int ran=u.ranI(0,40);
-         if(ran<34)//82.5%
+         if(ran<33)//80%
          {
             return "nothing";
+         }
+         if(ran<34)
+         {
+            return "wizard";
          }
          if(ran<36)//5% 
          {
