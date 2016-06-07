@@ -291,7 +291,7 @@ public class QuestBoard extends JPanel implements MouseListener
                         legit=false;//don't pass turn
                      }
             }while(false);
-            if(legit)//if indicate above
+            if(legit||players[p].getHP()<=0)//if indicate above
             {
                passTurn();
             }//else keep same player
@@ -347,6 +347,8 @@ public class QuestBoard extends JPanel implements MouseListener
          {//if going to player 1, move sun timer
             sunLeft--;
          }
+         if(sunLeft<=0)
+            break;
       }while(players[p].getHP()<=0);//skip players with no hp
       if(sunLeft<=0)//end of game execution
       {
